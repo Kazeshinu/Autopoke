@@ -17,6 +17,12 @@ var base = 'https://kazeshinu.github.io/Autopoke/'
 var modules = ['breeding', 'clicking', 'dungeon', 'farming', 'underground'];
     for (var i=0,len=modules.length; i<len; i++) {
         document.head.appendChild(document.createElement('script')).src = base + module + modules[i] + '.js';
+		Notifier.notify({
+			title: 'Autopoke: ',
+			message: 'Loaded: '+modules[i],
+			type: 1,
+			timeout:20000,
+});
     }
 	
 function versionCompare(v1, v2, options) {
