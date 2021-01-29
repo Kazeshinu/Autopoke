@@ -8,6 +8,19 @@
 // @grant        none
 // ==/UserScript==
 
+
+App.game.interval
+
+
+(function() {
+    const checkReady = setInterval(function() {
+        if (typeof App.game.interval !== 'undefined') {
+            Game.LoadMod('https://aktanusa.github.io/CookieMonster/CookieMonster.js');
+            clearInterval(checkReady);
+        }
+    }, 1000);
+})();
+
 var script = document.createElement('script');
 script.id = 'AutoPoke';
 //This can be edited to point to your own Github Repository URL.
