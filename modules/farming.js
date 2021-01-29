@@ -16,7 +16,7 @@ Object.defineProperties(Autopoke.farming, {
 			return this._berry;
 		},
 		set: function(val) {
-			if (BerryType[val]!=='undefined') {
+			if (typeof BerryType[val]!=='undefined') {
 				this._berry=App.game.farming.berryData[BerryType[val]];
 				clearInterval(this.interval);
 				this.interval=this.intervalFunction();				
