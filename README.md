@@ -12,7 +12,7 @@ Modules and functions
 	- openChests = true OR false
 - breeding
 - clicking
-	-cps = clicks per second
+	- cps = clicks per second
 - farming
 - underground
 
