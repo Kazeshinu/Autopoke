@@ -1,5 +1,5 @@
 // Global Variables
-var lastCompatibleVersion = 0.7.5;
+var lastCompatibleVersion = "0.7.5";
 if (versionCompare(App.game.update.version,lastCompatibleVersion)==1) {
 	Notifier.notify({
 		title: `WARNING: Pokéclicker version is newer than this version of Autopoke`,
