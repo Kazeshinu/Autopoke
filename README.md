@@ -8,8 +8,8 @@ Modules and functions
 ------------------
 
 - dungeon
-	- runs = amount of runs | 0 to stop
-	- openChests = true|false
+	- runs = amount of runs (0 to stop)
+	- openChests = true OR false
 - breeding
 - clicking
 	-cps = clicks per second
@@ -30,7 +30,7 @@ For the Desktop version open console with CTRL+SHIFT+I
 Run this in console: https://kazeshinu.github.io/Autopoke/Autopoke.js to load all modules
 or individual modules: https://kazeshinu.github.io/Autopoke/modules/{MODULE_NAME_LOWERCASE}.js
 
-Access your modules with Autopoke.module i.e `Autopoke.dungeon.runs=100`
+Access your modules with Autopoke.module i.e `Autopoke.dungeon.runs=100` `Autopoke.farming.Stop()`
 
 Support / Social
 ------------------
