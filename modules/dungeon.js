@@ -65,7 +65,7 @@ Object.defineProperties(Autopoke.dungeon, {
 Autopoke.dungeon.intervalFunction = function() {
 	return setInterval(() => {
 		
-		if (this._runs==0 && App.game.gameState!=4) clearInterval(this.autoDungeon);
+		if (this._runs==0 && App.game.gameState!=4) clearInterval(this.interval);
 		
 		
 		if (this._runs>0 && App.game.gameState==6 && typeof player.town().dungeon !== 'undefined') {
@@ -76,16 +76,16 @@ Autopoke.dungeon.intervalFunction = function() {
             return;
         }		
 		var DRmap = DungeonRunner.map;
-		if (DRmap.playerPosition().x>0 && (!DRmap.board()[DungeonRunner.map.playerPosition().y][DungeonRunner.map.playerPosition().x-1].isVisible||DRmap.board()[DungeonRunner.map.playerPosition().y][DungeonRunner.map.playerPosition().x-1].type()==3)) {
+		if (DRmap.playerPosition().x>0 && (!DRmap.board()[DungeonRunner.map.playerPosition().y][DungeonRunner.map.playerPosition().x-1].isVisible||((this.openChests) && DRmap.board()[DungeonRunner.map.playerPosition().y][DungeonRunner.map.playerPosition().x-1].type()==3))) {
 				DRmap.moveLeft();
 		}
-		else if (DRmap.playerPosition().y>0 && (!DRmap.board()[DungeonRunner.map.playerPosition().y-1][DungeonRunner.map.playerPosition().x].isVisible||DRmap.board()[DungeonRunner.map.playerPosition().y-1][DungeonRunner.map.playerPosition().x].type()==3)) {
+		else if (DRmap.playerPosition().y>0 && (!DRmap.board()[DungeonRunner.map.playerPosition().y-1][DungeonRunner.map.playerPosition().x].isVisible||((this.openChests) && DRmap.board()[DungeonRunner.map.playerPosition().y-1][DungeonRunner.map.playerPosition().x].type()==3))) {
 				DRmap.moveUp();
 		}
-		else if (DRmap.playerPosition().y<DRmap.size-1 && (!DRmap.board()[DungeonRunner.map.playerPosition().y+1][DungeonRunner.map.playerPosition().x].isVisible || DRmap.board()[DungeonRunner.map.playerPosition().y+1][DungeonRunner.map.playerPosition().x].type()==3 )) {
+		else if (DRmap.playerPosition().y<DRmap.size-1 && (!DRmap.board()[DungeonRunner.map.playerPosition().y+1][DungeonRunner.map.playerPosition().x].isVisible ||((this.openChests) &&  DRmap.board()[DungeonRunner.map.playerPosition().y+1][DungeonRunner.map.playerPosition().x].type()==3 ))) {
 				DRmap.moveDown();
 		}
-		else if (DRmap.playerPosition().x<DRmap.size-1 && (!DRmap.board()[DungeonRunner.map.playerPosition().y][DungeonRunner.map.playerPosition().x+1].isVisible||DRmap.board()[DungeonRunner.map.playerPosition().y][DungeonRunner.map.playerPosition().x+1].type()==3)) {
+		else if (DRmap.playerPosition().x<DRmap.size-1 && (!DRmap.board()[DungeonRunner.map.playerPosition().y][DungeonRunner.map.playerPosition().x+1].isVisible||((this.openChests) && DRmap.board()[DungeonRunner.map.playerPosition().y][DungeonRunner.map.playerPosition().x+1].type()==3))) {
 				DRmap.moveRight();
 		}
 		else {
