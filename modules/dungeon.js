@@ -93,7 +93,7 @@ Autopoke.dungeon.intervalFunction = function() {
 				for (p2 = 0; p2 < DRmap.size; p2++) {
 					if (DRmap.board()[p1][p2].type()==4) {
 						DRmap.moveToCoordinates(p2,p1);
-						DungeonRunner.startBossF ight();
+						DungeonRunner.startBossFight();
 						p1 = p2 = DRmap.size;
 					}
 				}
