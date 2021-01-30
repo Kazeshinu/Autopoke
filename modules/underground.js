@@ -7,7 +7,7 @@ if (typeof Autopoke.underground === 'undefined') {
 }
 Object.defineProperties(Autopoke.underground, {
 	_intervalTime: {
-		value:1000*60,
+		value:1000*App.game.underground.getEnergyRegenTime(),
 		writable:true
 	},
 	intervalTime: {
@@ -49,8 +49,8 @@ Autopoke.underground.smartMine=function(x,y) {
 }
 Autopoke.underground.intervalFunction = function() {
 	return setInterval(() => {
-		if (App.game.underground.energy >= Underground.BASE_ENERGY_MAX-Underground.BASE_ENERGY_GAIN) {
-			while (App.game.underground.energy >= Underground.BASE_ENERGY_MAX-Underground.BASE_ENERGY_GAIN) {
+		if (App.game.underground.energy >= App.game.underground.getMaxEnergy()-App.game.underground.getEnergyGain()) {
+			while (App.game.underground.energy >= App.game.underground.getMaxEnergy()-App.game.underground.getEnergyGain()) {
 				const x = GameConstants.randomIntBetween(0, App.game.underground.getSizeY() - 1);
 				const y = GameConstants.randomIntBetween(0, Underground.sizeX - 1);
 				this.smartMine(x,y);

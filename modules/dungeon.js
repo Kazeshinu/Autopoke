@@ -72,7 +72,7 @@ Autopoke.dungeon.intervalFunction = function() {
 			DungeonRunner.initializeDungeon(player.town().dungeon);
 			this._runs--;			
 		}		
-        if (DungeonRunner.dungeonFinished() || DungeonRunner.fighting() || DungeonBattle.catching() || typeof DungeonRunner.map==='undefined') {
+        if (DungeonRunner.fightingBoss() || DungeonRunner.dungeonFinished() || DungeonRunner.fighting() || DungeonBattle.catching() || typeof DungeonRunner.map==='undefined') {
             return;
         }		
 		var DRmap = DungeonRunner.map;
@@ -93,8 +93,8 @@ Autopoke.dungeon.intervalFunction = function() {
 				for (p2 = 0; p2 < DRmap.size; p2++) {
 					if (DRmap.board()[p1][p2].type()==4) {
 						DRmap.moveToCoordinates(p2,p1);
-						DungeonRunner.startBossFight();
-						p1 = p2 = -1;
+						DungeonRunner.startBossF ight();
+						p1 = p2 = DRmap.size;
 					}
 				}
 			}
