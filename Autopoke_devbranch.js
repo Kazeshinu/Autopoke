@@ -9,7 +9,7 @@ if (versionCompare(App.game.update.version,lastCompatibleVersion)==1) {
 }
 var Autopoke = {};
 
-var base = 'https://kazeshinu.github.io/Autopoke/'
+var base = 'https://raw.githubusercontent.com/Kazeshinu/Autopoke/dev/'
   , module = 'modules/'
 var modules = ['breeding', 'clicking', 'dungeon', 'farming', 'underground'];
 for (var i=0,len=modules.length; i<len; i++) {
