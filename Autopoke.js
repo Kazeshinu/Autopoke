@@ -19,22 +19,22 @@ var base = 'https://cdn.jsdelivr.net/gh/kazeshinu/Autopoke@'+AutopokeBranch+'/'
 var modules = ['breeding', 'clicking', 'dungeon', 'farming', 'underground'];
 for (var i=0,len=modules.length; i<len; i++) {
 	document.head.appendChild(document.createElement('script')).src = base + module + modules[i] + '.js?v='+AutopokeVersion;
-	
-	  checkReady[modules[i]] = setInterval(function() {
-        if (typeof Autopoke[modules[i]] !== 'undefined') {
-			
-			Autopoke[modules[i]].Start();
-			console.log("loaded: "+modules[i]);
-			Notifier.notify({
-				title: 'Autopoke ',
-				message: 'Loaded: '+modules[i],
-				type: 1,
-				timeout:20000,
-			});
-            clearInterval(checkReady[modules[i]]);
-        }
-    }, 1000);
-	
+	checkReady[modules[i]] = setInterval((function(i){
+            return function(){
+				if (typeof Autopoke[modules[i]] !== 'undefined') {
+					
+					Autopoke[modules[i]].Start();
+					console.log("Autopoke loaded module: "+modules[i]);
+					Notifier.notify({
+						title: 'Autopoke ',
+						message: 'Loaded: '+modules[i],
+						type: 1,
+						timeout:20000,
+					});
+					clearInterval(checkReady[modules[i]]);
+				}
+			};
+	})(i), 1000);	
 }
 
 function versionCompare(v1, v2, options) {
