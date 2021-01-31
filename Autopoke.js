@@ -14,7 +14,7 @@ if (versionCompare(App.game.update.version,lastCompatibleVersion)==1) {
 var Autopoke = {};
 var checkReady={};
 
-var base = 'https://cdn.jsdelivr.net/gh/kazeshinu/Autopoke@'+AutopokeBranch+'/modules/'
+var base = 'https://cdn.jsdelivr.net/gh/kazeshinu/Autopoke@'+AutopokeBranch+'/'
   , module = 'modules/'
 var modules = ['breeding', 'clicking', 'dungeon', 'farming', 'underground'];
 for (var i=0,len=modules.length; i<len; i++) {
