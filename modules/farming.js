@@ -1,22 +1,23 @@
-
 // Auto Farming
-if (typeof Autopoke === 'undefined') {
-	var Autopoke={}
-}
-if (typeof Autopoke.farming === 'undefined') {
-	Autopoke.farming={}
-}
-Object.defineProperties(Autopoke.farming, {
-	_berry: {
-		value:App.game.farming.berryData[BerryType.Cheri],
-		writable: true
-	},
-	berry: {
-		get:function() {
+
+if (!Autopoke) var Autopoke={};
+
+(function() {
+	const AutoFarming = {
+		intervalFunction: function() {
+			return setInterval(() => {
+				App.game.farming.harvestAll();
+				App.game.farming.plantAll(this.berry.type);
+			},this.berry.growthTime[3]+1);
+		},
+
+		_berry:App.game.farming.berryData[BerryType.Cheri],
+
+		get berry() {
 			return this._berry;
 		},
-		set: function(val) {
-			if (typeof BerryType[val]!=='undefined') {
+		set berry(val) {
+			if (BerryType[val]) {
 				this._berry=App.game.farming.berryData[BerryType[val]];
 				clearInterval(this.interval);
 				this.interval=this.intervalFunction();				
@@ -24,15 +25,27 @@ Object.defineProperties(Autopoke.farming, {
 			else {
 				console.log("No berry with that name (Case sensitive)");
 			}
-		}
+		},
+		
+		_intervalTime: 1000,
+		
+		get intervalTime() {
+			return this._intervalTime;
+		},	
+		
+		set intervalTime(val) {
+			if (Number.isInteger(val)) {
+				this._intervalTime=val;
+				this.Stop();
+				this.Start();				
+			}
+			else {
+				console.log("Not a whole number");				
+			}			
+		},
+		Start: function() {this.interval=this.intervalFunction();},		
+		
+		Stop: function() {clearInterval(this.interval);}
 	}
-});
-Autopoke.farming.intervalFunction = function() {
-	return setInterval(() => {
-		App.game.farming.harvestAll();
-		App.game.farming.plantAll(this.berry.type);
-	},this.berry.growthTime[3]+1);
-}
-Autopoke.farming.Start = function() {this.interval=this.intervalFunction();};
-Autopoke.farming.Stop = function() {clearInterval(this.interval);}
-Autopoke.farming.Start();
+	Autopoke.farming = AutoFarming;
+})();

@@ -1,3 +1,7 @@
+var AutopokeVersion = "0.2";
+
+var AutopokeBranch= "main"; //  main || dev
+
 var lastCompatibleVersion = "0.7.5";
 if (versionCompare(App.game.update.version,lastCompatibleVersion)==1) {
 	Notifier.notify({
@@ -7,18 +11,32 @@ if (versionCompare(App.game.update.version,lastCompatibleVersion)==1) {
         timeout: GameConstants.DAY,
     });
 }
-var base = 'https://kazeshinu.github.io/Autopoke/'
+var Autopoke = {};
+var checkReady={};
+
+var base = 'https://cdn.jsdelivr.net/gh/kazeshinu/Autopoke@'+AutopokeBranch+'/'
   , module = 'modules/'
 var modules = ['breeding', 'clicking', 'dungeon', 'farming', 'underground'];
 for (var i=0,len=modules.length; i<len; i++) {
-	document.head.appendChild(document.createElement('script')).src = base + module + modules[i] + '.js';
-	Notifier.notify({
-	title: 'Autopoke: ',
-	message: 'Loaded: '+modules[i],
-	type: 1,
-	timeout:20000,
-	});
-}	
+	document.head.appendChild(document.createElement('script')).src = base + module + modules[i] + '.js?v='+AutopokeVersion;
+	checkReady[modules[i]] = setInterval((function(i){
+            return function(){
+				if (typeof Autopoke[modules[i]] !== 'undefined') {
+					
+					Autopoke[modules[i]].Start();
+					console.log("Autopoke loaded module: "+modules[i]);
+					Notifier.notify({
+						title: 'Autopoke ',
+						message: 'Loaded: '+modules[i],
+						type: 1,
+						timeout:20000,
+					});
+					clearInterval(checkReady[modules[i]]);
+				}
+			};
+	})(i), 1000);	
+}
+
 function versionCompare(v1, v2, options) {
     var lexicographical = options && options.lexicographical,
         zeroExtend = options && options.zeroExtend,
