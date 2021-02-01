@@ -6,14 +6,18 @@ if (!Autopoke) var Autopoke={};
 	
 	const AutoDungeon = {
 		
+		interval:[],
+		
 		intervalFunction: function() {
 			return setInterval(() => {
 				
-				if (this._runs==0 && App.game.gameState!=4) { 
-					clearInterval(this.interval);
+				if (this._runs==1 && App.game.gameState!=4) { 
+					clearInterval(this.interval.pop());
+					DungeonRunner.dungeonObservable(this._dummyDungeon);
 				}				
-				if (this._runs>0 && App.game.gameState==6 && typeof player.town().dungeon !== 'undefined') {
+				if (this._runs>1 && App.game.gameState==6 && typeof player.town().dungeon !== 'undefined') {
 					DungeonRunner.initializeDungeon(player.town().dungeon);
+					this._openChests=this._preopenChests;
 					this._runs--;			
 				}		
 				if (DungeonRunner.fightingBoss() || DungeonRunner.dungeonFinished() || DungeonRunner.fighting() || DungeonBattle.catching() || typeof DungeonRunner.map==='undefined') {
@@ -35,7 +39,7 @@ if (!Autopoke) var Autopoke={};
 				else {
 					for (p1 = 0; p1 < DRmap.size; p1++) {
 						for (p2 = 0; p2 < DRmap.size; p2++) {
-							if (DRmap.board()[p1][p2].type()==4) {
+							if (DRmap.board()[p1][p2].type()==4&&DRmap.board()[p1][p2].isVisible) {
 								DRmap.moveToCoordinates(p2,p1);
 								DungeonRunner.startBossFight();
 								p1 = p2 = DRmap.size;
@@ -49,15 +53,23 @@ if (!Autopoke) var Autopoke={};
 				DungeonRunner.startBossFight();
 			}, this.intervalTime);
 		},
-		_runs: 0,
+		_dummyDungeon: {
+			baseHealth: 102,
+			bossList: [],
+			difficultyRoute: 1,
+			enemyList: [],
+			itemList: [],
+			level: 5,
+			name: "DummyDungeon",
+			tokenCost: 0			
+		},
+		_runs: 1,
 		get runs() {
 			return this._runs;
 		},
 		set runs(val) {
 			if (Number.isInteger(val)) {
-				this._runs=val;
-				this.Stop();
-				if(val>0) this.Start();				
+				this._runs=val;		
 			}
 			else {
 				console.log("Not a whole number");
@@ -65,12 +77,13 @@ if (!Autopoke) var Autopoke={};
 		},
 		
 		_openChests: false,
+		_preopenChests: false,
 		get openChests() {
 			return this._openChests;
 		},
 		set openChests(val) {
 			if (val === true || val === false) {
-				this._openChests=val;			
+				this._preopenChests=val;			
 			}
 			else {
 				console.log("Not true or false");
@@ -85,19 +98,39 @@ if (!Autopoke) var Autopoke={};
 		
 		set intervalTime(val) {
 			if (Number.isInteger(val)) {
-				this._intervalTime=val;
-				this.Stop();
-				this.Start();				
+				this._intervalTime=val;			
+				this.Start();
 			}
 			else {
 				console.log("Not a whole number");				
 			}			
 		},
 		
-		Start: function() {this.interval=this.intervalFunction();},		
+		Start: function() {clearInterval(this.interval.pop());this.interval.push(this.intervalFunction());},		
 		
-		Stop: function() {clearInterval(this.interval);}
+		Stop: function() {this._runs=1}
 		
 	}
 	Autopoke.dungeon = AutoDungeon;
+	Autopoke.dungeon._dungeon=Autopoke.dungeon._dummyDungeon;
+	DungeonRunner.dungeonObservable = ko.observable(Autopoke.dungeon._dummyDungeon);
+	DungeonRunner.initializeDungeon=(function() {
+		var old_function = DungeonRunner.initializeDungeon;
+		return function() {			
+			var result =old_function.apply(this,arguments);
+			this.dungeonObservable(this.dungeon);
+			return result;
+		};
+	})();
+	DungeonRunner.dungeonObservable.subscribe(function(newValue) {
+		if (Autopoke.dungeon._dungeon==newValue) {
+			return;
+		}
+		Autopoke.dungeon._dungeon=newValue;
+		if (newValue.name!="DummyDungeon") {
+			Autopoke.dungeon.Start();
+		}
+		
+	
+	});
 })();

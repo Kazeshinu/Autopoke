@@ -17,7 +17,7 @@ if (!Autopoke) var Autopoke={};
 			return this._berry;
 		},
 		set berry(val) {
-			if (BerryType[val]) {
+			if (BerryType[val]!==undefined) {
 				this._berry=App.game.farming.berryData[BerryType[val]];
 				clearInterval(this.interval);
 				this.interval=this.intervalFunction();				
