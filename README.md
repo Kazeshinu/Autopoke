@@ -83,4 +83,4 @@ Support / Social
 
 ![Discord](https://img.shields.io/discord/437797104786604034?color=%237289DA&label=Legends%20of%20IdleOn&logo=Discord) Created in Legends of Idleon Discord #off-topic-chat 
 
-![GitHub issues](https://img.shields.io/github/issues/kazeshinu/Autopoke) Open a ticket on GitHub
+![GitHub issues](https://img.shields.io/github/issues/kazeshinu/Autopoke?logo=Github) Open a ticket on GitHub
