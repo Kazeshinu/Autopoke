@@ -1,4 +1,4 @@
-var AutopokeVersion = "0.2";
+var AutopokeVersion = "0.3";
 
 var AutopokeBranch= "main"; //  main || dev
 
@@ -16,10 +16,10 @@ var checkReady={};
 
 var base = 'https://cdn.jsdelivr.net/gh/kazeshinu/Autopoke@'+AutopokeBranch+'/'
   , module = 'modules/'
-var modules = ['breeding', 'clicking', 'dungeon', 'farming', 'underground'];
+var modules = ['breeding', 'clicking', 'dungeon', 'farming', 'underground','gym'];
 for (var i=0,len=modules.length; i<len; i++) {
 	document.head.appendChild(document.createElement('script')).src = base + module + modules[i] + '.js?v='+AutopokeVersion;
-	checkReady[modules[i]] = setInterval((function(i){
+	checkReady[modules[i]] = setInterval((function(i,x){
             return function(){
 				if (typeof Autopoke[modules[i]] !== 'undefined') {
 					
@@ -32,9 +32,24 @@ for (var i=0,len=modules.length; i<len; i++) {
 						timeout:20000,
 					});
 					clearInterval(checkReady[modules[i]]);
+					return;
+				}
+				else {
+					x=x+1
+				}
+				console.log(x);
+				if(x>10) {
+					console.log("Autopoke error module: "+modules[i]);
+					Notifier.notify({
+						title: 'Autopoke ',
+						message: 'Error loading: '+modules[i],
+						type: 3,
+						timeout:20000,
+					});
+					clearInterval(checkReady[modules[i]]);
 				}
 			};
-	})(i), 1000);	
+	})(i,0), 1000);	
 }
 
 function versionCompare(v1, v2, options) {
