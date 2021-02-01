@@ -1,7 +1,7 @@
 # Autopoke
 ------------------
 
-Autopoke is a hobby automation script collection for [![Foo](https://raw.githubusercontent.com/pokeclicker/pokeclicker/develop/src/assets/images/favicon.ico)](https://www.pokeclicker.com)https://www.pokeclicker.com  GitHub: [![Foo](https://i.imgur.com/qV0ZkHA.png)](https://github.com/pokeclicker/pokeclicker)\
+Autopoke is a hobby automation script collection for [![Foo](https://raw.githubusercontent.com/pokeclicker/pokeclicker/develop/src/assets/images/favicon.ico)](https://www.pokeclicker.com)https://www.pokeclicker.com [![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/pokeclicker/pokeclicker/master?label=live%20version)](https://www.pokeclicker.com/)<br/>
 Also works on the Desktop version CTRL+SHIFT+I to open Console\
 \
 Desktop version available at GitHub: [![Foo](https://i.imgur.com/qV0ZkHA.png)](https://github.com/RedSparr0w/Pokeclicker-desktop)
@@ -82,6 +82,6 @@ Access your modules with Autopoke.module i.e `Autopoke.dungeon.runs=100` `Autopo
 Support / Social
 ------------------
 
-[![Foo](https://i.imgur.com/XvxEoEE.png)](https://discord.com/invite/idleon) Created in Legends of Idleon #off-topic-chat [Discord](https://discord.com/invite/idleon "Discord")
+![Discord](https://img.shields.io/discord/437797104786604034?color=%237289DA&label=Legends%20of%20IdleOn&logo=Discord) Created in Legends of Idleon Discord #off-topic-chat 
 
-[![Foo](https://i.imgur.com/qV0ZkHA.png)](https://github.com/Kazeshinu/Autopoke/issues/new) Open a ticket on [GitHub](https://github.com/Kazeshinu/Autopoke/issues/new "GitHub")
+![GitHub issues](https://img.shields.io/github/issues/kazeshinu/Autopoke) Open a ticket on GitHub
