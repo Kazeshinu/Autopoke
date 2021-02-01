@@ -12,7 +12,7 @@ if (!Autopoke) var Autopoke={};
 			return setInterval(() => {
 				
 				if (this._runs==1 && App.game.gameState!=4) { 
-					clearInterval(this.interval);
+					clearInterval(this.interval.pop());
 					DungeonRunner.dungeonObservable(this._dummyDungeon);
 				}				
 				if (this._runs>1 && App.game.gameState==6 && typeof player.town().dungeon !== 'undefined') {
