@@ -1,10 +1,10 @@
 # Autopoke
 ------------------
 
-Autopoke is a hobby automation script collection for [![Foo](https://raw.githubusercontent.com/pokeclicker/pokeclicker/develop/src/assets/images/favicon.ico)](https://www.pokeclicker.com)https://www.pokeclicker.com [![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/pokeclicker/pokeclicker/master?label=live%20version)](https://www.pokeclicker.com/)<br/>
+Autopoke is a hobby automation script collection for [![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/pokeclicker/pokeclicker/master?label=Pokeclicker.com)](https://www.pokeclicker.com/)<br/>
 Also works on the Desktop version CTRL+SHIFT+I to open Console\
 \
-Desktop version available at GitHub: [![Foo](https://i.imgur.com/qV0ZkHA.png)](https://github.com/RedSparr0w/Pokeclicker-desktop)
+Desktop version available at GitHub: ![GitHub release (latest by date)](https://img.shields.io/github/v/release/RedSparr0w/Pokeclicker-desktop?label=Pokeclicker-desktop)
 
 ## Modules
 
