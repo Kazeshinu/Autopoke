@@ -6,7 +6,7 @@ if (!Autopoke) var Autopoke={};
 	
 	const AutoClicking = {
 		
-		interval=[],
+		interval:[],
 		
 		intervalFunction: function() {
 			return setInterval(() => {

@@ -6,7 +6,7 @@ if (!Autopoke) var Autopoke={};
 	
 	const AutoBreeding = {
 		
-		interval=[],
+		interval:[],
 		
 		intervalFunction: function() {
 			return setInterval(() => {

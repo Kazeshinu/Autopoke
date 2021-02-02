@@ -6,7 +6,7 @@ if (!Autopoke) var Autopoke={};
 	
 	const AutoUnderground = {
 		
-		interval=[],
+		interval:[],
 		intervalFunction: function() {
 			return setInterval(() => {
 				while (App.game.underground.energy >= App.game.underground.getMaxEnergy()-App.game.underground.getEnergyGain()-1) {
