@@ -14,7 +14,7 @@ if (versionCompare(App.game.update.version,lastCompatibleVersion)==1) {
 var Autopoke = {};
 var checkReady={};
 
-var base = 'https://cdn.jsdelivr.net/gh/kazeshinu/Autopoke@'+AutopokeBranch+'/'
+var base = 'https://raw.githack.com/Kazeshinu/Autopoke/'+AutopokeBranch+'/'
   , module = 'modules/';
 if (AutopokeBranch=="main") base = 'https://kazeshinu.github.io/Autopoke/'
 var modules = ['breeding', 'clicking', 'dungeon', 'farming', 'underground','gym','quests'];
