@@ -359,6 +359,7 @@ if (!Autopoke) var Autopoke={};
 			alreadyCaughtShinySelection: App.game.pokeballs.alreadyCaughtShinySelection,
 			alreadyCaughtSelection:App.game.pokeballs.alreadyCaughtSelection			
 		},
+		_highestClicking: true,
 		_currentQuest: {},
 		
 		_intervalTime: 100,
