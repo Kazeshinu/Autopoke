@@ -221,7 +221,7 @@ if (!Autopoke) var Autopoke={};
 					case UseOakItemQuest:
 						oakItem = this._currentQuest.item;
 						if (!App.game.oakItems.isActive(oakItem)) {
-							App.game.oakItems.deactivate(App.game.oakItems.itemList.find(p => p.isActive).name);
+							App.game.oakItems.deactivate(App.game.oakItems.itemList.find(p => p.isActive&&p.name!=oakItem).name);
 							App.game.oakItems.activate(oakItem);
 						}
 						switch (oakItem) {
