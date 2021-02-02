@@ -130,7 +130,7 @@ if (!Autopoke) var Autopoke = {};
 
 					case DefeatPokemonsQuest:
 						route = [this._currentQuest.region, this._currentQuest.route];
-						if (MapHelper.accessToRoute(route[1], route[0]) && (this.helpFunctions.latestDockUnlocked() ? route[0] <= player.highestRegion() : route[0] == player.highestRegion()) && this._autoMove) {
+						if (this.helpFunctions.accessToRoute(route[1], route[0]) && this._autoMove) {
 							MapHelper.moveToRoute(route[1], route[0]);
 						} else {
 							console.log("Route is not available or autoMove is false");
@@ -174,7 +174,7 @@ if (!Autopoke) var Autopoke = {};
 					case HatchEggsQuest:
 						if (Autopoke.breeding !== undefined) {
 							let r = this.helpFunctions.highestAvailableOneClickRoute();
-							if (r === 0 || Autopoke.clicking .interval.length==0) {
+							if (r === 0 || Autopoke.clicking.interval.length === 0) {
 								let r = this.helpFunctions.highestAvailableOneShotRoute();
 								if (r !== 0) {
 									MapHelper.moveToRoute(r[1], r[0]);
@@ -195,7 +195,7 @@ if (!Autopoke) var Autopoke = {};
 						let oakItem = this._currentQuest.item;
 						if (!App.game.oakItems.isActive(oakItem)) {
 							if (!App.game.oakItems.hasAvailableSlot()) {
-								App.game.oakItems.deactivate(App.game.oakItems.itemList.find(p => p.isActive&&p.name!=oakItem).name);
+								App.game.oakItems.deactivate(App.game.oakItems.itemList.find(p => p.isActive && p.name !== oakItem).name);
 							}
 							App.game.oakItems.activate(oakItem);
 						}
@@ -219,7 +219,7 @@ if (!Autopoke) var Autopoke = {};
 							case OakItems.OakItem.Amulet_Coin:
 							case OakItems.OakItem.Exp_Share:
 								let route = 0;
-								if (Autopoke.clicking.interval.length!==0) {
+								if (Autopoke.clicking.interval.length !== 0) {
 									route = this.helpFunctions.highestAvailableOneClickRoute();
 									if (route === 0) {
 										console.log("No one-tappable routes are accessible");
@@ -257,14 +257,16 @@ if (!Autopoke) var Autopoke = {};
 			latestDockUnlocked: function () {
 				return TownList[GameConstants.DockTowns[player.highestRegion()]].isUnlocked();
 			},
+			accessToRoute: function (route, region) {
+				return MapHelper.accessToRoute(route, region) && (this.helpFunctions.latestDockUnlocked()
+					? region <= player.highestRegion() : region === player.highestRegion())
+			},
 			betterAccessToTown: function (townName) {
 				const town = TownList[townName];
 				return this.latestDockUnlocked() ? town.isUnlocked() : (town.isUnlocked() && (town.region === player.highestRegion))
 			},
 			highestAvailableOneShotRoute: function () {
-				const routes = Routes.regionRoutes.map(r => [r.region, r.number])
-					.filter(r => MapHelper.accessToRoute(r[1], r[0]) &&
-						(this.latestDockUnlocked() ? r[0] <= player.highestRegion() : r[0] === player.highestRegion()));
+				const routes = Routes.regionRoutes.map(r => [r.region, r.number]).filter(r => this.accessToRoute(r[1], r[0]));
 				const found = routes.reverse()
 					.find(r => PokemonFactory.routeHealth(r[1], r[0]) < Math.max(1,
 						App.game.party.calculatePokemonAttack(PokemonType.None, PokemonType.None,
@@ -272,9 +274,7 @@ if (!Autopoke) var Autopoke = {};
 				return found || 0;
 			},
 			highestAvailableOneClickRoute: function () {
-				const routes = Routes.regionRoutes.map(r => [r.region, r.number]).filter(r =>
-					MapHelper.accessToRoute(r[1], r[0]) &&
-					(this.latestDockUnlocked() ? r[0] <= player.highestRegion() : r[0] === player.highestRegion()));
+				const routes = Routes.regionRoutes.map(r => [r.region, r.number]).filter(r => this.accessToRoute(r[1], r[0]));
 				const attack = App.game.party.calculateClickAttack();
 				const found = routes.reverse().find(r => PokemonFactory.routeHealth(r[1], r[0]) < attack);
 				return found || 0;
@@ -288,10 +288,7 @@ if (!Autopoke) var Autopoke = {};
 					.filter(r => r[1] > 0)
 			},
 			routeShardsRateForType: function (type) {
-				let availableRoutes = Routes.regionRoutes.filter(r =>
-					MapHelper.accessToRoute(r.number, r.region) &&
-					(this.latestDockUnlocked ? r.region <= player.highestRegion() : r.region === player.highestRegion())
-				)
+				let availableRoutes = Routes.regionRoutes.filter(r => this.accessToRoute(r.number, r.region)				)
 				return availableRoutes.map(r => [
 					[r.region, r.number],
 					Object.values(r.pokemon).flat()
@@ -308,7 +305,7 @@ if (!Autopoke) var Autopoke = {};
 					let pokemon = Object.values(Routes.getRoute(region, route).pokemon).flat().map(p => PokemonHelper.getPokemonByName(p))
 					let hits = pokemon.map(p => App.game.party.calculatePokemonAttack(p.type1, p.type2))
 						.map(d => Math.ceil(PokemonFactory.routeHealth(route, region) / d))
-					let clicks = pokemon.map(p => App.game.party.calculateClickAttack())
+					let clicks = pokemon.map(() => App.game.party.calculateClickAttack())
 						.map(d => Math.ceil(PokemonFactory.routeHealth(route, region) / d))
 					return [[region, route], rate / Math.min(average(hits), average(clicks) / 20)]
 				})
