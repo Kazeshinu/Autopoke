@@ -238,7 +238,7 @@ if (!Autopoke) var Autopoke={};
 			routeShardsRateForType: function (type) {
 				let availableRoutes = Routes.regionRoutes.filter(r =>
 					MapHelper.accessToRoute(r.number, r.region) &&
-					(this.latestDockUnlocked ? r.region <= player.highestRegion() : r.region === player.highestRegion())
+					(this.helpFunctions.latestDockUnlocked ? r.region <= player.highestRegion() : r.region === player.highestRegion())
 				)
 				return availableRoutes.map(r => [
 					[r.region, r.number],
@@ -249,8 +249,8 @@ if (!Autopoke) var Autopoke={};
 			},
 			mostEfficientPlaceForShardType: function (type) {
 				let average = (ls) => ls.reduce((a, b) => a + b, 0) / ls.length
-				let routeShards = routeShardsRateForType(type)
-				let gymShards = gymShardsRateForType(type)
+				let routeShards = this.helpFunctions.routeShardsRateForType(type)
+				let gymShards = this.helpFunctions.gymShardsRateForType(type)
 				let routeShardsPerSec = routeShards.map(r => {
 					let [[region, route], rate] = r
 					let pokemon = Object.values(Routes.getRoute(region, route).pokemon).flat().map(p => PokemonHelper.getPokemonByName(p))
