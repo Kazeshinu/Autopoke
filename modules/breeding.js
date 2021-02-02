@@ -6,6 +6,8 @@ if (!Autopoke) var Autopoke={};
 	
 	const AutoBreeding = {
 		
+		interval=[],
+		
 		intervalFunction: function() {
 			return setInterval(() => {
 				if(!App.game.breeding.queueSlots()){
@@ -37,16 +39,15 @@ if (!Autopoke) var Autopoke={};
 		set intervalTime(val) {
 			if (Number.isInteger(val)) {
 				this._intervalTime=val;
-				this.Stop();
 				this.Start();				
 			}
 			else {
 				console.log("Not a whole number");				
 			}			
 		},
-		Start: function() {this.interval=this.intervalFunction();},		
+		Start: function() {clearInterval(this.interval.pop());this.interval.push(this.intervalFunction());},		
 		
-		Stop: function() {clearInterval(this.interval);}
+		Stop: function() {clearInterval(this.interval.pop());}
 	}
 	Autopoke.breeding = AutoBreeding;
 })();
