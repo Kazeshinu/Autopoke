@@ -67,6 +67,7 @@ if (!Autopoke) var Autopoke={};
 		
 	}
 	Autopoke.gym = AutoGym;
+	Autopoke.gym._gym=Autopoke.gym._dummyGym;
 	GymRunner.gymObservable(Autopoke.gym._dummyGym);
 	GymRunner.gymObservable.subscribe(function(newValue) {
 		if (Autopoke.gym._gym==newValue) {
