@@ -11,6 +11,11 @@ if (!Autopoke) var Autopoke={};
 		intervalFunction: function() {
 			return setInterval(() => {
 				
+				if (this._runs<1) {
+					
+					clearInterval(this.interval.pop());
+					return;
+				}
 				
 				if (this._runs==1 && App.game.gameState!=4) { 
 					clearInterval(this.interval.pop());
