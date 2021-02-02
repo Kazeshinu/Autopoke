@@ -7,7 +7,7 @@ if (!Autopoke) var Autopoke={};
 	const AutoUnderground = {
 		intervalFunction: function() {
 			return setInterval(() => {
-				while (App.game.underground.energy >= App.game.underground.getMaxEnergy()-App.game.underground.getEnergyGain()) {
+				while (App.game.underground.energy >= App.game.underground.getMaxEnergy()-App.game.underground.getEnergyGain()-1) {
 					const x = GameConstants.randomIntBetween(0, App.game.underground.getSizeY() - 1);
 					const y = GameConstants.randomIntBetween(0, Underground.sizeX - 1);
 					this.smartMine(x,y);

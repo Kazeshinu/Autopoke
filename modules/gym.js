@@ -12,6 +12,7 @@ if (!Autopoke) var Autopoke={};
 			return setInterval(() => {				
 				if (this._runs==1 && App.game.gameState!=3) { 
 					clearInterval(this.interval.pop());
+					this._dummyGym.leaderName=this._gym.leaderName; //To give correct Badge
 					GymRunner.gymObservable(this._dummyGym);
 				}				
 				if (this._runs>1 && App.game.gameState==6) {

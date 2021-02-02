@@ -4,6 +4,9 @@ if (!Autopoke) var Autopoke={};
 
 (function() {
 	const AutoFarming = {
+		
+		interval:[],
+		
 		intervalFunction: function() {
 			return setInterval(() => {
 				App.game.farming.harvestAll();
@@ -43,9 +46,9 @@ if (!Autopoke) var Autopoke={};
 				console.log("Not a whole number");				
 			}			
 		},
-		Start: function() {this.interval=this.intervalFunction();},		
+		Start: function() {clearInterval(this.interval.pop());this.interval.push(this.intervalFunction());},		
 		
-		Stop: function() {clearInterval(this.interval);}
+		Stop: function() {clearInterval(this.interval.pop());}
 	}
 	Autopoke.farming = AutoFarming;
 })();
