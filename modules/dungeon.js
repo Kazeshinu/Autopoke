@@ -11,8 +11,15 @@ if (!Autopoke) var Autopoke={};
 		intervalFunction: function() {
 			return setInterval(() => {
 				
+				if (this._runs<1) {
+					
+					clearInterval(this.interval.pop());
+					return;
+				}
+				
 				if (this._runs==1 && App.game.gameState!=4) { 
 					clearInterval(this.interval.pop());
+					this._openChests=this._preopenChests;
 					DungeonRunner.dungeonObservable(this._dummyDungeon);
 				}				
 				if (this._runs>1 && App.game.gameState==6 && typeof player.town().dungeon !== 'undefined') {
@@ -83,6 +90,9 @@ if (!Autopoke) var Autopoke={};
 		},
 		set openChests(val) {
 			if (val === true || val === false) {
+				if (App.game.gameState!=4) {
+					this._openChests=val;
+				}
 				this._preopenChests=val;			
 			}
 			else {
@@ -127,7 +137,7 @@ if (!Autopoke) var Autopoke={};
 			return;
 		}
 		Autopoke.dungeon._dungeon=newValue;
-		if (newValue.name!="DummyDungeon") {
+		if (newValue.name!="DummyDungeon"&&Autopoke.dungeon.runs>0) {
 			Autopoke.dungeon.Start();
 		}
 		

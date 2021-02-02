@@ -1,4 +1,4 @@
-var AutopokeVersion = "0.3";
+var AutopokeVersion = "0.4";
 
 var AutopokeBranch= "main"; //  main || dev
 
@@ -14,10 +14,10 @@ if (versionCompare(App.game.update.version,lastCompatibleVersion)==1) {
 var Autopoke = {};
 var checkReady={};
 
-var base = 'https://cdn.jsdelivr.net/gh/kazeshinu/Autopoke@'+AutopokeBranch+'/'
+var base = 'https://raw.githack.com/Kazeshinu/Autopoke/'+AutopokeBranch+'/'
   , module = 'modules/';
 if (AutopokeBranch=="main") base = 'https://kazeshinu.github.io/Autopoke/'
-var modules = ['breeding', 'clicking', 'dungeon', 'farming', 'underground','gym'];
+var modules = ['breeding', 'clicking', 'dungeon', 'farming', 'underground','gym','quests'];
 for (var i=0,len=modules.length; i<len; i++) {
 	document.head.appendChild(document.createElement('script')).src = base + module + modules[i] + '.js?v='+AutopokeVersion;
 	checkReady[modules[i]] = setInterval((function(i,x){

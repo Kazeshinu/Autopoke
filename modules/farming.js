@@ -22,8 +22,7 @@ if (!Autopoke) var Autopoke={};
 		set berry(val) {
 			if (BerryType[val]!==undefined) {
 				this._berry=App.game.farming.berryData[BerryType[val]];
-				clearInterval(this.interval);
-				this.interval=this.intervalFunction();				
+				this.Start();
 			}
 			else {
 				console.log("No berry with that name (Case sensitive)");
@@ -39,7 +38,6 @@ if (!Autopoke) var Autopoke={};
 		set intervalTime(val) {
 			if (Number.isInteger(val)) {
 				this._intervalTime=val;
-				this.Stop();
 				this.Start();				
 			}
 			else {

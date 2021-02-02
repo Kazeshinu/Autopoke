@@ -6,6 +6,8 @@ if (!Autopoke) var Autopoke={};
 	
 	const AutoClicking = {
 		
+		interval:[],
+		
 		intervalFunction: function() {
 			return setInterval(() => {
 				switch (App.game.gameState) {
@@ -28,7 +30,6 @@ if (!Autopoke) var Autopoke={};
 		set cps(val) {
 			if (Number.isInteger(val)) {
 				this._intervalTime=Math.floor(1000/val);
-				this.Stop();
 				this.Start();			
 			}
 			else {
@@ -41,7 +42,6 @@ if (!Autopoke) var Autopoke={};
 		set intervalTime(val) {
 			if (Number.isInteger(val)) {
 				this._intervalTime=val;
-				this.Stop();
 				this.Start();				
 			}
 			else {
@@ -49,8 +49,9 @@ if (!Autopoke) var Autopoke={};
 			}			
 		},		
 		
-		Start: function() {this.interval=this.intervalFunction();},
-		Stop: function() {clearInterval(this.interval);},
+		Start: function() {clearInterval(this.interval.pop());this.interval.push(this.intervalFunction());},		
+		
+		Stop: function() {clearInterval(this.interval.pop());}
 		
 	}
 	Autopoke.clicking = AutoClicking;
