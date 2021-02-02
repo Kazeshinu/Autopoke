@@ -174,7 +174,7 @@ if (!Autopoke) var Autopoke = {};
 					case HatchEggsQuest:
 						if (Autopoke.breeding !== undefined) {
 							let r = this.helpFunctions.highestAvailableOneClickRoute();
-							if (r === 0 || Autopoke.clicking === undefined) {
+							if (r === 0 || Autopoke.clicking .interval.length==0) {
 								let r = this.helpFunctions.highestAvailableOneShotRoute();
 								if (r !== 0) {
 									MapHelper.moveToRoute(r[1], r[0]);
@@ -194,7 +194,9 @@ if (!Autopoke) var Autopoke = {};
 					case UseOakItemQuest:
 						let oakItem = this._currentQuest.item;
 						if (!App.game.oakItems.isActive(oakItem)) {
-							App.game.oakItems.deactivate(App.game.oakItems.itemList.find(p => p.isActive).name);
+							if (!App.game.oakItems.hasAvailableSlot()) {
+								App.game.oakItems.deactivate(App.game.oakItems.itemList.find(p => p.isActive&&p.name!=oakItem).name);
+							}
 							App.game.oakItems.activate(oakItem);
 						}
 						switch (oakItem) {
@@ -217,7 +219,7 @@ if (!Autopoke) var Autopoke = {};
 							case OakItems.OakItem.Amulet_Coin:
 							case OakItems.OakItem.Exp_Share:
 								let route = 0;
-								if (this._highestClicking) {
+								if (Autopoke.clicking.interval.length!==0) {
 									route = this.helpFunctions.highestAvailableOneClickRoute();
 									if (route === 0) {
 										console.log("No one-tappable routes are accessible");
@@ -334,8 +336,6 @@ if (!Autopoke) var Autopoke = {};
 			alreadyCaughtShinySelection: App.game.pokeballs.alreadyCaughtShinySelection,
 			alreadyCaughtSelection: App.game.pokeballs.alreadyCaughtSelection
 		},
-		_highestClicking: true,
-		_shardLocations: [],
 		_currentQuest: {},
 
 		_intervalTime: 100,
@@ -377,4 +377,3 @@ if (!Autopoke) var Autopoke = {};
 	});
 
 })();
-
