@@ -39,7 +39,7 @@ if (!Autopoke) var Autopoke={};
 						}
 						else {
 							Console.log("Need more gold before buying "+this._currentQuest.amount+" "+itemName);
-							Console.log("Missing "+item.totalPrice(this._currentQuest.amount)-App.game.wallet.currencies[item.currency]()
+							Console.log("Missing "+item.totalPrice(this._currentQuest.amount)-App.game.wallet.currencies[item.currency]())
 						}
 						break;
 					case DefeatDungeonQuest:
@@ -227,8 +227,54 @@ if (!Autopoke) var Autopoke={};
 				const found = routes.reverse().find(r => PokemonFactory.routeHealth(r[1], r[0]) < attack);
 				return found || 0;
 			},
-			
-			
+			gymShardsRateForType: function (type) {
+				return Object.values(gymList)
+					.filter(g => Gym.isUnlocked(g))
+					.map(g => [g.town, (g.pokemons
+						.map(p => PokemonHelper.getPokemonByName(p.name)))
+						.filter(p => p.type1 === type || p.type2 === type).length / g.pokemons.length * GameConstants.GYM_SHARDS])
+					.filter(r => r[1] > 0)
+			},
+			routeShardsRateForType: function (type) {
+				let availableRoutes = Routes.regionRoutes.filter(r =>
+					MapHelper.accessToRoute(r.number, r.region) &&
+					(this.latestDockUnlocked ? r.region <= player.highestRegion() : r.region === player.highestRegion())
+				)
+				return availableRoutes.map(r => [
+					[r.region, r.number],
+					Object.values(r.pokemon).flat()
+						.map(p => PokemonHelper.getPokemonByName(p))
+						.filter(p => p.type1 === type || p.type2 === type).length / Object.values(r.pokemon).flat().length
+				]).filter(r => r[1] > 0)
+			},
+			mostEfficientPlaceForShardType: function (type) {
+				let average = (ls) => ls.reduce((a, b) => a + b, 0) / ls.length
+				let routeShards = routeShardsRateForType(type)
+				let gymShards = gymShardsRateForType(type)
+				let routeShardsPerSec = routeShards.map(r => {
+					let [[region, route], rate] = r
+					let pokemon = Object.values(Routes.getRoute(region, route).pokemon).flat().map(p => PokemonHelper.getPokemonByName(p))
+					let hits = pokemon.map(p => App.game.party.calculatePokemonAttack(p.type1, p.type2))
+						.map(d => Math.ceil(PokemonFactory.routeHealth(route, region) / d))
+					let clicks = pokemon.map(p => App.game.party.calculateClickAttack())
+						.map(d => Math.ceil(PokemonFactory.routeHealth(route, region) / d))
+					return [[region, route], rate / Math.min(average(hits), average(clicks) / 20)]
+				})
+				let gymShardsPerSec = gymShards.map(r => {
+					let [gym, rate] = r
+					let hits = gymList[gym].pokemons.map(p => {
+						let poke = PokemonHelper.getPokemonByName(p.name)
+						return Math.ceil(p.maxHealth / App.game.party.calculatePokemonAttack(poke.type1, poke.type2))
+					})
+					let clicks = gymList[gym].pokemons.map(p => Math.ceil(p.maxHealth / App.game.party.calculateClickAttack()))
+					return [gym, rate / Math.min(average(hits), average(clicks) / 20)]
+				})
+
+				let bestRoute = routeShardsPerSec.sort((r1, r2) => r2[1] - r1[1])[0]
+				let bestGym = gymShardsPerSec.sort((r1, r2) => r2[1] - r1[1])[0]
+				return bestGym[1] > bestRoute[1] ? bestGym[0] : bestRoute[0]
+			},
+
 		},
 		_captureShinyBall: 2,
 		_captureBall: 0,
