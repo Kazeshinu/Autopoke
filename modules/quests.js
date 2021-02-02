@@ -207,22 +207,22 @@ if (!Autopoke) var Autopoke={};
 						}
 					}
 				});
-				return shops.filter(town => betterAccessToTown(town.name));
+				return shops.filter(town => this.betterAccessToTown(town.name));
 			},
 			latestDockUnlocked: function() {
 				return TownList[GameConstants.DockTowns[player.highestRegion()]].isUnlocked();		
 			},
 			betterAccessToTown: function(townName) {
 				var town = TownList[townName];
-				return latestDockUnlocked()?town.isUnlocked():(town.isUnlocked()&&(town.region==player.highestRegion))
+				return this.latestDockUnlocked()?town.isUnlocked():(town.isUnlocked()&&(town.region==player.highestRegion))
 			},
 			highestAvailableOneShotRoute: function() {
-				const routes = Routes.regionRoutes.map(r => [r.region,r.number]).filter(r => MapHelper.accessToRoute(r[1],r[0])&&(latestDockUnlocked()?r[0]<=player.highestRegion():r[0]==player.highestRegion()));
+				const routes = Routes.regionRoutes.map(r => [r.region,r.number]).filter(r => MapHelper.accessToRoute(r[1],r[0])&&(this.latestDockUnlocked()?r[0]<=player.highestRegion():r[0]==player.highestRegion()));
 				const found = routes.reverse().find(r => PokemonFactory.routeHealth(r[1], r[0]) < Math.max(1, App.game.party.calculatePokemonAttack(PokemonType.None, PokemonType.None, false, r[0], true, false, false)));
 				return found || 0;
 			},
 			highestAvailableOneClickRoute: function() {
-				const routes = Routes.regionRoutes.map(r => [r.region,r.number]).filter(r => MapHelper.accessToRoute(r[1],r[0])&&(latestDockUnlocked()?r[0]<=player.highestRegion():r[0]==player.highestRegion()));
+				const routes = Routes.regionRoutes.map(r => [r.region,r.number]).filter(r => MapHelper.accessToRoute(r[1],r[0])&&(this.latestDockUnlocked()?r[0]<=player.highestRegion():r[0]==player.highestRegion()));
 				const attack = App.game.party.calculateClickAttack();
 				const found = routes.reverse().find(r => PokemonFactory.routeHealth(r[1], r[0]) < attack);
 				return found || 0;
@@ -238,7 +238,7 @@ if (!Autopoke) var Autopoke={};
 			routeShardsRateForType: function (type) {
 				let availableRoutes = Routes.regionRoutes.filter(r =>
 					MapHelper.accessToRoute(r.number, r.region) &&
-					(this.helpFunctions.latestDockUnlocked ? r.region <= player.highestRegion() : r.region === player.highestRegion())
+					(this.latestDockUnlocked ? r.region <= player.highestRegion() : r.region === player.highestRegion())
 				)
 				return availableRoutes.map(r => [
 					[r.region, r.number],
@@ -249,8 +249,8 @@ if (!Autopoke) var Autopoke={};
 			},
 			mostEfficientPlaceForShardType: function (type) {
 				let average = (ls) => ls.reduce((a, b) => a + b, 0) / ls.length
-				let routeShards = this.helpFunctions.routeShardsRateForType(type)
-				let gymShards = this.helpFunctions.gymShardsRateForType(type)
+				let routeShards = this.routeShardsRateForType(type)
+				let gymShards = this.gymShardsRateForType(type)
 				let routeShardsPerSec = routeShards.map(r => {
 					let [[region, route], rate] = r
 					let pokemon = Object.values(Routes.getRoute(region, route).pokemon).flat().map(p => PokemonHelper.getPokemonByName(p))
@@ -280,7 +280,7 @@ if (!Autopoke) var Autopoke={};
 		_captureBall: 0,
 		_pokeballs: {
 			alreadyCaughtShinySelection: App.game.pokeballs.alreadyCaughtShinySelection,
-			alreadyCaughtSelection:App.game.pokeballs.alreadyCaughtSelection			
+			alreadyCaughtSelection: App.game.pokeballs.alreadyCaughtSelection
 		},
 		_shardLocations: [],
 		_currentQuest: {},
