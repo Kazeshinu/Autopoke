@@ -24,19 +24,21 @@ if (!Autopoke) var Autopoke = {};
 				//Get quest and depending on what quest do stuff
 				this._currentQuest = App.game.quests.currentQuests()[0];
 				if (!(this._currentQuest instanceof GainShardsQuest)) {
-					this._mostEfficientPlace=[];
+					this._mostEfficientPlace = [];
 				}
-				
+
+				let route
+				let itemName
 				switch (this._currentQuest.constructor) {
 					case BuyPokeballsQuest:
-						let itemName = GameConstants.Pokeball[this._currentQuest.pokeball];
+						itemName = GameConstants.Pokeball[this._currentQuest.pokeball];
 						let towns = this.helpFunctions.getAvailableShopsByItemName(itemName);
 						let item = towns[0].shop.items.filter(item => item.name === itemName)[0];
-						if (App.game.wallet.hasAmount(new Amount(item.totalPrice(this._currentQuest.amount), item.currency))&&this._autoMove) {
+						if (App.game.wallet.hasAmount(new Amount(item.totalPrice(this._currentQuest.amount), item.currency)) && this._autoMove) {
 							MapHelper.moveToTown(towns[0].name)
 							item.buy(this._currentQuest.amount);
 						} else {
-							console.log("Need more gold before buying " + this._currentQuest.amount + " " + itemName+" or autoMove is false");
+							console.log("Need more gold before buying " + this._currentQuest.amount + " " + itemName + " or autoMove is false");
 							console.log("Missing " + item.totalPrice(this._currentQuest.amount) - App.game.wallet.currencies[item.currency]());
 						}
 						break;
@@ -46,7 +48,7 @@ if (!Autopoke) var Autopoke = {};
 						}
 						if (Autopoke.dungeon !== undefined) {
 							if (this.helpFunctions.betterAccessToTown(this._currentQuest.dungeon) &&
-								App.game.wallet.hasAmount(new Amount(dungeonList[this._currentQuest.dungeon].tokenCost, GameConstants.Currency.dungeonToken))&&this._autoMove) {
+								App.game.wallet.hasAmount(new Amount(dungeonList[this._currentQuest.dungeon].tokenCost, GameConstants.Currency.dungeonToken)) && this._autoMove) {
 								Autopoke.dungeon._runs = 1;
 								MapHelper.moveToTown(this._currentQuest.dungeon);
 								DungeonRunner.initializeDungeon(player.town().dungeon);
@@ -61,7 +63,7 @@ if (!Autopoke) var Autopoke = {};
 						if (App.game.gameState === 3) {
 							return;
 						}
-						if (this.helpFunctions.betterAccessToTown(TownList[this._currentQuest.gymTown].name)&&this._autoMove) {
+						if (this.helpFunctions.betterAccessToTown(TownList[this._currentQuest.gymTown].name) && this._autoMove) {
 							if (Autopoke.gym !== undefined) {
 								Autopoke.gym._runs = 1;
 							}
@@ -77,111 +79,102 @@ if (!Autopoke) var Autopoke = {};
 					case CapturePokemonsQuest:
 					case GainMoneyQuest:
 
-					var itemName =""
-					var buyAmount=100;
+						itemName = ""
+						let buyAmount = 100;
 
-						if(this._currentQuest instanceof UsePokeballQuest) {
+						if (this._currentQuest instanceof UsePokeballQuest) {
 							App.game.pokeballs._alreadyCaughtSelection(this._currentQuest.pokeball);
 							itemName = GameConstants.Pokeball[this._currentQuest.pokeball];
-							buyAmount = (this._currentQuest.focus()-this._currentQuest.initial()+this._currentQuest.amount);
-						}
-						else if(this._currentQuest instanceof CapturePokemonsQuest) {
+							buyAmount = (this._currentQuest.focus() - this._currentQuest.initial() + this._currentQuest.amount);
+						} else if (this._currentQuest instanceof CapturePokemonsQuest) {
 							App.game.pokeballs._alreadyCaughtSelection(this._captureBall);
 							itemName = GameConstants.Pokeball[this._captureBall];
-							buyAmount=(this._currentQuest.focus()-this._currentQuest.initial()+this._currentQuest.amount)*2;
-						}
-						else if(this._currentQuest instanceof GainTokensQuest) {
+							buyAmount = (this._currentQuest.focus() - this._currentQuest.initial() + this._currentQuest.amount) * 2;
+						} else if (this._currentQuest instanceof GainTokensQuest) {
 							App.game.pokeballs._alreadyCaughtSelection(this._captureBall);
 							itemName = GameConstants.Pokeball[this._captureBall];
-						}
-
-						else if(this._currentQuest instanceof CatchShiniesQuest) {
+						} else if (this._currentQuest instanceof CatchShiniesQuest) {
 							App.game.pokeballs._alreadyCaughtShinySelection(this._captureShinyBall);
 							itemName = GameConstants.Pokeball[this._captureShinyBall];
-							buyAmount=(this._currentQuest.focus()-this._currentQuest.initial()+this._currentQuest.amount)*10;
+							buyAmount = (this._currentQuest.focus() - this._currentQuest.initial() + this._currentQuest.amount) * 10;
 						}
-						if (itemName!="") {
-							if (App.game.pokeballs.getBallQuantity(GameConstants.Pokeball[itemName])==0) {
-								var towns = this.helpFunctions.getAvailableShopsByItemName(itemName);
-								var item = towns[0].shop.items.filter(item => item.name==itemName)[0];
-								if (App.game.wallet.hasAmount(new Amount(item.totalPrice(buyAmount), item.currency))&&this._autoMove) {
+						if (itemName !== "") {
+							if (App.game.pokeballs.getBallQuantity(GameConstants.Pokeball[itemName]) === 0) {
+								let towns = this.helpFunctions.getAvailableShopsByItemName(itemName);
+								let item = towns[0].shop.items.filter(item => item.name === itemName)[0];
+								if (App.game.wallet.hasAmount(new Amount(item.totalPrice(buyAmount), item.currency)) && this._autoMove) {
 									MapHelper.moveToTown(towns[0].name)
 									item.buy(buyAmount);
-								}
-								else {
+								} else {
 									console.log("All out of Balls and cant afford them or autoMove is false");
 								}
 							}
 						}
-						var route=0;
-						if (Autopoke.clicking.interval.length!=0) {
+						route = 0;
+						if (Autopoke.clicking.interval.length !== 0) {
 							route = this.helpFunctions.highestAvailableOneClickRoute();
-							if (route==0) {
-								console.log("no route that are one tappable is accessable");
+							if (route === 0) {
+								console.log("No one-tappable routes are accessible");
 							}
 						}
-						if (route==0) {
+						if (route === 0) {
 							route = this.helpFunctions.highestAvailableOneShotRoute();
-							if (route==0) {
-								console.log("no oneshot routes available");
+							if (route === 0) {
+								console.log("No oneshot routes available");
 							}
 						}
-						if (route!=1&&this._autoMove) {
-							MapHelper.moveToRoute(route[1],route[0]);
+						if (route !== 1 && this._autoMove) {
+							MapHelper.moveToRoute(route[1], route[0]);
 						}
 						break;
 
 					case DefeatPokemonsQuest:
-							var route = [this._currentQuest.region,this._currentQuest.route];
-							if(MapHelper.accessToRoute(route[1],route[0])&&(this.helpFunctions.latestDockUnlocked()?route[0]<=player.highestRegion():route[0]==player.highestRegion())&&this._autoMove) {
-								MapHelper.moveToRoute(route[1],route[0]);
-							}
-							else {
-								console.log("route is not available or autoMove is false");
-							}
+						route = [this._currentQuest.region, this._currentQuest.route];
+						if (MapHelper.accessToRoute(route[1], route[0]) && (this.helpFunctions.latestDockUnlocked() ? route[0] <= player.highestRegion() : route[0] == player.highestRegion()) && this._autoMove) {
+							MapHelper.moveToRoute(route[1], route[0]);
+						} else {
+							console.log("Route is not available or autoMove is false");
+						}
 						break;
 					case GainShardsQuest:
-						if (this._mostEfficientPlace.length==0) {
-							this._mostEfficientPlace=this.helpFunctions.mostEfficientPlaceForShardType(this._currentQuest.type);
+						if (this._mostEfficientPlace.length === 0) {
+							this._mostEfficientPlace = this.helpFunctions.mostEfficientPlaceForShardType(this._currentQuest.type);
 						}
 						if (typeof this._mostEfficientPlace === "string") {
-							if (App.game.gameState==3) {
+							if (App.game.gameState === 3) {
 								return;
 							}
-							if(this.helpFunctions.betterAccessToTown(this._mostEfficientPlace)&&this._autoMove) {
-								if(Autopoke.gym!==undefined) {
-									Autopoke.gym._runs=1;
+							if (this.helpFunctions.betterAccessToTown(this._mostEfficientPlace) && this._autoMove) {
+								if (Autopoke.gym !== undefined) {
+									Autopoke.gym._runs = 1;
 								}
 								MapHelper.moveToTown(this._mostEfficientPlace);
 								GymRunner.startGym(gymList[this._mostEfficientPlace]);
 
-							}
-							else {
-								console.log("Not enoght tokens or no access to dungeon or autoMove is false");
+							} else {
+								console.log("Not enough tokens or no access to dungeon or autoMove is false");
 							}
 
-						}
-						else {
-							var route=this._mostEfficientPlace;
-							MapHelper.moveToRoute(route[1],route[0]);
+						} else {
+							let route = this._mostEfficientPlace;
+							MapHelper.moveToRoute(route[1], route[0]);
 
 						}
-					
-						break;					
+
+						break;
 					case HarvestBerriesQuest:
-						if(Autopoke.farming!==undefined) {
-							if(Autopoke.farming.berry.type!=this._currentQuest.berryType&&Autopoke.farming.interval.length!=0) {
-								Autopoke.farming.berry=BerryType[this._currentQuest.berryType];
-							}							
-						}
-						else {
+						if (Autopoke.farming !== undefined) {
+							if (Autopoke.farming.berry.type !== this._currentQuest.berryType && Autopoke.farming.interval.length !== 0) {
+								Autopoke.farming.berry = BerryType[this._currentQuest.berryType];
+							}
+						} else {
 							console.log("Enable farming module please");
 						}
 						break;
 					case HatchEggsQuest:
 						if (Autopoke.breeding !== undefined) {
 							let r = this.helpFunctions.highestAvailableOneClickRoute();
-							if (r === 0|| Autopoke.clicking===undefined) {
+							if (r === 0 || Autopoke.clicking === undefined) {
 								let r = this.helpFunctions.highestAvailableOneShotRoute();
 								if (r !== 0) {
 									MapHelper.moveToRoute(r[1], r[0]);
@@ -194,14 +187,12 @@ if (!Autopoke) var Autopoke = {};
 						}
 						break;
 					case MineLayersQuest:
-						if (Autopoke.underground !== undefined) {
-
-						} else {
+						if (Autopoke.underground === undefined) {
 							console.log("Enable underground module please");
 						}
 						break;
 					case UseOakItemQuest:
-						oakItem = this._currentQuest.item;
+						let oakItem = this._currentQuest.item;
 						if (!App.game.oakItems.isActive(oakItem)) {
 							App.game.oakItems.deactivate(App.game.oakItems.itemList.find(p => p.isActive).name);
 							App.game.oakItems.activate(oakItem);
@@ -209,42 +200,41 @@ if (!Autopoke) var Autopoke = {};
 						switch (oakItem) {
 							case OakItems.OakItem.Magic_Ball:
 								App.game.pokeballs._alreadyCaughtSelection(this._captureBall);
-								var itemName = GameConstants.Pokeball[this._captureBall];
-								var buyAmount = (this._currentQuest.focus() - this._currentQuest.initial());
-								if (itemName!="") {
-									if (App.game.pokeballs.getBallQuantity(GameConstants.Pokeball[itemName])==0) {
-										var towns = this.helpFunctions.getAvailableShopsByItemName(itemName);
-										var item = towns[0].shop.items.filter(item => item.name==itemName)[0];
-										if (App.game.wallet.hasAmount(new Amount(item.totalPrice(buyAmount), item.currency))&&this._autoMove) {
+								let itemName = GameConstants.Pokeball[this._captureBall];
+								let buyAmount = (this._currentQuest.focus() - this._currentQuest.initial());
+								if (itemName !== "") {
+									if (App.game.pokeballs.getBallQuantity(GameConstants.Pokeball[itemName]) === 0) {
+										let towns = this.helpFunctions.getAvailableShopsByItemName(itemName);
+										let item = towns[0].shop.items.filter(item => item.name === itemName)[0];
+										if (App.game.wallet.hasAmount(new Amount(item.totalPrice(buyAmount), item.currency)) && this._autoMove) {
 											MapHelper.moveToTown(towns[0].name)
 											item.buy(buyAmount);
-										}
-										else {
-											console.log("All out of Balls and cant affort them or autoMove is false");
+										} else {
+											console.log("All out of Balls and can't afford them or autoMove is false");
 										}
 									}
 								}
 							case OakItems.OakItem.Amulet_Coin:
 							case OakItems.OakItem.Exp_Share:
-								var route=0;
+								let route = 0;
 								if (this._highestClicking) {
 									route = this.helpFunctions.highestAvailableOneClickRoute();
-									if (route==0) {
-										console.log("no route that are one tappable is accessable");
+									if (route === 0) {
+										console.log("No one-tappable routes are accessible");
 									}
 								}
-								if (route==0) {
+								if (route === 0) {
 									route = this.helpFunctions.highestAvailableOneShotRoute();
-									if (route==0) {
-										console.log("no oneshot routes available");
+									if (route === 0) {
+										console.log("No oneshot routes available");
 									}
 								}
-								if (route!=1&&this._autoMove) {
-									MapHelper.moveToRoute(route[1],route[0]);
+								if (route !== 1 && this._autoMove) {
+									MapHelper.moveToRoute(route[1], route[0]);
 								}
 								break;
 						}
-					break;
+						break;
 				}
 
 			}, this.intervalTime);
@@ -372,15 +362,15 @@ if (!Autopoke) var Autopoke = {};
 	}
 	Autopoke.quests = AutoQuests;
 
-	App.game.pokeballs._alreadyCaughtSelection.subscribe(function(newValue) {
+	App.game.pokeballs._alreadyCaughtSelection.subscribe(function (newValue) {
 		if (!((Autopoke.quests._currentQuest instanceof UsePokeballQuest) ||
-			  (Autopoke.quests._currentQuest instanceof CapturePokemonsQuest) ||
-			  (Autopoke.quests._currentQuest instanceof GainTokensQuest) ||
-			  ((Autopoke.quests._currentQuest instanceof UseOakItemQuest)&& Autopoke.quests._currentQuest.item==0))) {
+			(Autopoke.quests._currentQuest instanceof CapturePokemonsQuest) ||
+			(Autopoke.quests._currentQuest instanceof GainTokensQuest) ||
+			((Autopoke.quests._currentQuest instanceof UseOakItemQuest) && Autopoke.quests._currentQuest.item === 0))) {
 			Autopoke.quests._pokeballs.alreadyCaughtSelection = newValue;
 		}
 	});
-	App.game.pokeballs._alreadyCaughtShinySelection.subscribe(function(newValue) {
+	App.game.pokeballs._alreadyCaughtShinySelection.subscribe(function (newValue) {
 		if (!(Autopoke.quests._currentQuest instanceof CatchShiniesQuest)) {
 			Autopoke.quests._pokeballs.alreadyCaughtShinySelection = newValue;
 		}
