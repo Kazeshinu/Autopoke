@@ -38,8 +38,8 @@ if (!Autopoke) var Autopoke = {};
 							MapHelper.moveToTown(towns[0].name)
 							item.buy(this._currentQuest.amount);
 						} else {
-							console.log("Need more gold before buying " + this._currentQuest.amount + " " + itemName + " or autoMove is false");
-							console.log("Missing " + item.totalPrice(this._currentQuest.amount) - App.game.wallet.currencies[item.currency]());
+							console.log(`Need more gold before buying ${this._currentQuest.amount} ${itemName} or autoMove is false`);
+							console.log(`Missing ${item.totalPrice(this._currentQuest.amount)}` - App.game.wallet.currencies[item.currency]());
 						}
 						break;
 					case DefeatDungeonQuest:
@@ -70,7 +70,7 @@ if (!Autopoke) var Autopoke = {};
 							MapHelper.moveToTown(TownList[this._currentQuest.gymTown].name);
 							GymRunner.startGym(gymList[this._currentQuest.gymTown]);
 						} else {
-							console.log("Can't access " + this._currentQuest.gymTown.name + "or autoMove is false");
+							console.log(`Can't access ${this._currentQuest.gymTown.name} or autoMove is false`);
 						}
 						break;
 					case UsePokeballQuest:
