@@ -1,52 +1,55 @@
 // Auto Farming
 
-if (!Autopoke) var Autopoke={};
+if (!Autopoke) var Autopoke = {};
 
-(function() {
+(function () {
 	const AutoFarming = {
-		
-		interval:[],
-		
-		intervalFunction: function() {
+
+		interval: [],
+
+		intervalFunction: function () {
 			return setInterval(() => {
 				App.game.farming.harvestAll();
 				App.game.farming.plantAll(this.berry.type);
-			},this.berry.growthTime[3]+1);
+			}, this.berry.growthTime[3] + 1);
 		},
 
-		_berry:App.game.farming.berryData[BerryType.Cheri],
+		_berry: App.game.farming.berryData[BerryType.Cheri],
 
 		get berry() {
 			return this._berry;
 		},
 		set berry(val) {
-			if (BerryType[val]!==undefined) {
-				this._berry=App.game.farming.berryData[BerryType[val]];
+			if (BerryType[val] !== undefined) {
+				this._berry = App.game.farming.berryData[BerryType[val]];
 				this.Start();
-			}
-			else {
+			} else {
 				console.log("No berry with that name (Case sensitive)");
 			}
 		},
-		
+
 		_intervalTime: 1000,
-		
+
 		get intervalTime() {
 			return this._intervalTime;
-		},	
-		
+		},
+
 		set intervalTime(val) {
 			if (Number.isInteger(val)) {
-				this._intervalTime=val;
-				this.Start();				
+				this._intervalTime = val;
+				this.Start();
+			} else {
+				console.log("Not a whole number");
 			}
-			else {
-				console.log("Not a whole number");				
-			}			
 		},
-		Start: function() {clearInterval(this.interval.pop());this.interval.push(this.intervalFunction());},		
-		
-		Stop: function() {clearInterval(this.interval.pop());}
+		Start: function () {
+			clearInterval(this.interval.pop());
+			this.interval.push(this.intervalFunction());
+		},
+
+		Stop: function () {
+			clearInterval(this.interval.pop());
+		}
 	}
 	Autopoke.farming = AutoFarming;
 })();

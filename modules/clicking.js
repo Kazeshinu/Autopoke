@@ -1,14 +1,14 @@
 // Auto Clicking
 
-if (!Autopoke) var Autopoke={};
+if (!Autopoke) var Autopoke = {};
 
-(function() {
-	
+(function () {
+
 	const AutoClicking = {
-		
-		interval:[],
-		
-		intervalFunction: function() {
+
+		interval: [],
+
+		intervalFunction: function () {
 			return setInterval(() => {
 				switch (App.game.gameState) {
 					case 2:
@@ -25,34 +25,37 @@ if (!Autopoke) var Autopoke={};
 		},
 		_intervalTime: 50,
 		get cps() {
-			return 1000/this._intervalTime;
+			return 1000 / this._intervalTime;
 		},
 		set cps(val) {
 			if (Number.isInteger(val)) {
-				this._intervalTime=Math.floor(1000/val);
-				this.Start();			
-			}
-			else {
+				this._intervalTime = Math.floor(1000 / val);
+				this.Start();
+			} else {
 				console.log("Not a number");
 			}
 		},
 		get intervalTime() {
 			return this._intervalTime;
-		},		
+		},
 		set intervalTime(val) {
 			if (Number.isInteger(val)) {
-				this._intervalTime=val;
-				this.Start();				
+				this._intervalTime = val;
+				this.Start();
+			} else {
+				console.log("Not a whole number");
 			}
-			else {
-				console.log("Not a whole number");				
-			}			
-		},		
-		
-		Start: function() {clearInterval(this.interval.pop());this.interval.push(this.intervalFunction());},		
-		
-		Stop: function() {clearInterval(this.interval.pop());}
-		
+		},
+
+		Start: function () {
+			clearInterval(this.interval.pop());
+			this.interval.push(this.intervalFunction());
+		},
+
+		Stop: function () {
+			clearInterval(this.interval.pop());
+		}
+
 	}
 	Autopoke.clicking = AutoClicking;
 })();
