@@ -10,13 +10,13 @@ if (!Autopoke) var Autopoke = {};
 
 		intervalFunction: function () {
 			return setInterval(() => {
-				if (!App.game.breeding.queueSlots()) {
+				if (App.game.breeding.queueList().length === 0) {
 					App.game.breeding.hatchPokemonEgg(0);
 					App.game.breeding.hatchPokemonEgg(1);
 					App.game.breeding.hatchPokemonEgg(2);
 					App.game.breeding.hatchPokemonEgg(3);
 				}
-				if (App.game.breeding.hasFreeQueueSlot() || App.game.breeding.hasFreeEggSlot()) {
+				if ((App.game.breeding.queueList().length < Math.min(this._maxQueueSlots,App.game.breeding.queueSlots())) || App.game.breeding.hasFreeEggSlot()) {
 					var nextPokemon = App.game.party.caughtPokemon.filter(
 						partyPokemon => BreedingController.visible(partyPokemon)()
 					)[0];
@@ -39,6 +39,18 @@ if (!Autopoke) var Autopoke = {};
 			if (Number.isInteger(val)) {
 				this._intervalTime = val;
 				this.Start();
+			} else {
+				console.log("Not a whole number");
+			}
+		},
+		_maxQueueSlots:2,
+		get maxQueueSlots() {
+			return this._intervalTime;
+		},
+
+		set maxQueueSlots(val) {
+			if (Number.isInteger(val)) {
+				this._maxQueueSlots = val;
 			} else {
 				console.log("Not a whole number");
 			}
