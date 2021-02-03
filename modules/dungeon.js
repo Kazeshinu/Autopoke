@@ -33,17 +33,17 @@ if (!Autopoke) var Autopoke = {};
 				}
 				let DRmap = DungeonRunner.map;
 				let pos = DRmap.playerPosition();
-				let left = DRmap.board()[pos.y][pos.x - 1];
-				let right = DRmap.board()[pos.y][pos.x + 1];
-				let up = DRmap.board()[pos.y - 1][pos.x];
-				let down = DRmap.board()[pos.y + 1][pos.x];
-				if (pos.x > 0 && (!left.isVisible || (this.openChests && left.type() === 3))) {
+                let left = () => DRmap.board()[pos.y][pos.x - 1];
+                let right = () => DRmap.board()[pos.y][pos.x + 1];
+                let up = () => DRmap.board()[pos.y - 1][pos.x];
+                let down = () => DRmap.board()[pos.y + 1][pos.x];
+				if (pos.x > 0 && (!left().isVisible || (this.openChests && left().type() === 3))) {
 					DRmap.moveLeft();
-				} else if (pos.y > 0 && (!up.isVisible || (this.openChests && up.type() === 3))) {
+				} else if (pos.y > 0 && (!up().isVisible || (this.openChests && up().type() === 3))) {
 					DRmap.moveUp();
-				} else if (pos.y < DRmap.size - 1 && (!down.isVisible || (this.openChests && down.type() === 3))) {
+				} else if (pos.y < DRmap.size - 1 && (!down().isVisible || (this.openChests && down().type() === 3))) {
 					DRmap.moveDown();
-				} else if (pos.x < DRmap.size - 1 && (!right.isVisible || (this.openChests && right.type() === 3))) {
+				} else if (pos.x < DRmap.size - 1 && (!right().isVisible || (this.openChests && right().type() === 3))) {
 					DRmap.moveRight();
 				} else {
 					for (let p1 = 0; p1 < DRmap.size; p1++) {
