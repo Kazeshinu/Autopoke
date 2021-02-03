@@ -25,14 +25,12 @@ if (!Autopoke) var Autopoke = {};
 					failsafe++;
 				}
 
-				//Get quest and depending on what quest do stuff
-				this._currentQuest = App.game.quests.currentQuests()[0];
 				
 				
 				// TODO: Some sort of priority system.
 				//some quest optimization
 				let shardQuest=false;
-				if (App.game.quests.currentQuests().length>1) {
+				let useBallQuest=false;
 					var highestPrio=0;
 					for (var i = 0;i<App.game.quests.currentQuests().length;i++) {
 						let index=this._questPriorityList.indexOf(App.game.quests.currentQuests()[i].constructor.name);
@@ -40,8 +38,9 @@ if (!Autopoke) var Autopoke = {};
 						if (this._currentQuest instanceof GainShardsQuest) {
 							shardQuest=true;
 						}
-						
-					}
+						if (this._currentQuest instanceof UsePokeballQuest) {
+							useBallQuest=true;
+						}
 						
 					highestPrio==this._questPriorityList.indexOf("NAME")
 				}
@@ -110,7 +109,7 @@ if (!Autopoke) var Autopoke = {};
 						itemName = ""
 						let buyAmount = 100;
 
-						if (this._currentQuest instanceof UsePokeballQuest) {
+						if ((this._currentQuest instanceof UsePokeballQuest) || useBallQuest) {
 							App.game.pokeballs._alreadyCaughtSelection(this._currentQuest.pokeball);
 							itemName = GameConstants.Pokeball[this._currentQuest.pokeball];
 							buyAmount = (this._currentQuest.focus() - this._currentQuest.initial() + this._currentQuest.amount);
@@ -121,7 +120,8 @@ if (!Autopoke) var Autopoke = {};
 						} else if (this._currentQuest instanceof GainTokensQuest) {
 							App.game.pokeballs._alreadyCaughtSelection(this._captureBall);
 							itemName = GameConstants.Pokeball[this._captureBall];
-						} else if (this._currentQuest instanceof CatchShiniesQuest) {
+						} 
+						if (this._currentQuest instanceof CatchShiniesQuest) {
 							App.game.pokeballs._alreadyCaughtShinySelection(this._captureShinyBall);
 							itemName = GameConstants.Pokeball[this._captureShinyBall];
 							buyAmount = (this._currentQuest.focus() - this._currentQuest.initial() + this._currentQuest.amount) * 10;
