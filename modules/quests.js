@@ -222,7 +222,8 @@ if (!Autopoke) var Autopoke = {};
 						}
 						break;
 					case HatchEggsQuest:
-						if (Autopoke.breeding !== undefined && this._autoMove && highestPrio==this._questPriorityList.indexOf(this._currentQuest.constructor.name)) {
+						if (Autopoke.breeding !== undefined) {
+							if(this._autoMove && highestPrio==this._questPriorityList.indexOf(this._currentQuest.constructor.name)) {
 							let r = this.helpFunctions.highestAvailableOneClickRoute();
 							if (r === 0 || Autopoke.clicking.interval.length === 0) {
 								let r = this.helpFunctions.highestAvailableOneShotRoute();
@@ -231,6 +232,7 @@ if (!Autopoke) var Autopoke = {};
 								}
 							} else {
 								MapHelper.moveToRoute(r[1], r[0]);
+							}
 							}
 						} else {
 							console.log("Enable breeding module please");
