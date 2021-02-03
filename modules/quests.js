@@ -27,6 +27,19 @@ if (!Autopoke) var Autopoke = {};
 
 				//Get quest and depending on what quest do stuff
 				this._currentQuest = App.game.quests.currentQuests()[0];
+				
+				
+				// TODO: Some sort of priority system.
+				//some quest optimization
+				if (App.game.quests.currentQuests().length>1) {
+					if (this._currentQuest instanceof MineLayersQuest) {
+						this._currentQuest=App.game.quests.currentQuests()[1];
+						
+					}
+					
+					
+				}
+				
 				if (!(this._currentQuest instanceof GainShardsQuest)) {
 					this._mostEfficientPlace = [];
 				}

@@ -33,10 +33,10 @@ if (!Autopoke) var Autopoke = {};
 				}
 				let DRmap = DungeonRunner.map;
 				let pos = DRmap.playerPosition();
-				let left = () => DRmap.board()[pos.y][pos.x - 1];
-				let right = () => DRmap.board()[pos.y][pos.x + 1];
-				let up = () => DRmap.board()[pos.y - 1][pos.x];
-				let down = () => DRmap.board()[pos.y + 1][pos.x];
+                let left = () => DRmap.board()[pos.y][pos.x - 1];
+                let right = () => DRmap.board()[pos.y][pos.x + 1];
+                let up = () => DRmap.board()[pos.y - 1][pos.x];
+                let down = () => DRmap.board()[pos.y + 1][pos.x];
 				if (pos.x > 0 && (!left().isVisible || (this.openChests && left().type() === 3))) {
 					DRmap.moveLeft();
 				} else if (pos.y > 0 && (!up().isVisible || (this.openChests && up().type() === 3))) {
