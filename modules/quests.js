@@ -15,10 +15,14 @@ if (!Autopoke) var Autopoke = {};
 
 				App.game.pokeballs.alreadyCaughtSelection = this._pokeballs.alreadyCaughtSelection;
 				App.game.pokeballs.alreadyCaughtShinySelection = this._pokeballs.alreadyCaughtShinySelection;
-
+				let failsafe = 0 //fixes infinite loop while gaining new questslot
 				//If Questslots Start new quests
-				while (App.game.quests.currentQuests().length < App.game.quests.questSlots() && App.game.quests.incompleteQuests().length > 0) {
-					App.game.quests.beginQuest(App.game.quests.incompleteQuests()[0].index);
+				while (App.game.quests.canStartNewQuest()&&failsafe<10) {
+					let nextQuest = App.game.quests.questList().find(quest => !quest.isCompleted()&&!quest.inProgress());
+					if (nextQuest) {
+						App.game.quests.beginQuest(nextQuest.index);
+					}
+					failsafe++;
 				}
 
 				//Get quest and depending on what quest do stuff
@@ -258,7 +262,7 @@ if (!Autopoke) var Autopoke = {};
 				return TownList[GameConstants.DockTowns[player.highestRegion()]].isUnlocked();
 			},
 			accessToRoute: function (route, region) {
-				return MapHelper.accessToRoute(route, region) && (this.helpFunctions.latestDockUnlocked()
+				return MapHelper.accessToRoute(route, region) && (this.latestDockUnlocked()
 					? region <= player.highestRegion() : region === player.highestRegion())
 			},
 			betterAccessToTown: function (townName) {
