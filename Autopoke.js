@@ -37,8 +37,8 @@ for (let i = 0, len = modules.length; i < len; i++) {
 			} else {
 				x = x + 1
 			}
-			console.log(x);
-			if (x > 10) {
+			console.log("Error loading "+modules[i]+", retries: ("+x+"/10)");
+			if (x >= 10) {
 				console.log("Autopoke error module: " + modules[i]);
 				Notifier.notify({
 					title: 'Autopoke ',
