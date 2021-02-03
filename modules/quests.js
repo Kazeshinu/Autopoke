@@ -31,21 +31,30 @@ if (!Autopoke) var Autopoke = {};
 				
 				// TODO: Some sort of priority system.
 				//some quest optimization
+				let shardQuest=false;
 				if (App.game.quests.currentQuests().length>1) {
-					if (this._currentQuest instanceof MineLayersQuest) {
-						this._currentQuest=App.game.quests.currentQuests()[1];
+					var highestPrio=0;
+					for (var i = 0;i<App.game.quests.currentQuests().length;i++) {
+						let index=this._questPriorityList.indexOf(App.game.quests.currentQuests()[i].constructor.name);
+						highestPrio=index>highestPrio?index:highestPrio;
+						if (this._currentQuest instanceof GainShardsQuest) {
+							shardQuest=true;
+						}
 						
 					}
-					
-					
+						
+					highestPrio==this._questPriorityList.indexOf("NAME")
 				}
 				
-				if (!(this._currentQuest instanceof GainShardsQuest)) {
+				if (!shardQuest) {
 					this._mostEfficientPlace = [];
 				}
 
 				let route
 				let itemName
+				for (var i = 0;i<App.game.quests.currentQuests().length;i++) {
+					this._currentQuest=App.game.quests.currentQuests()[i];
+					
 				switch (this._currentQuest.constructor) {
 					case BuyPokeballsQuest:
 						itemName = GameConstants.Pokeball[this._currentQuest.pokeball];
@@ -65,7 +74,8 @@ if (!Autopoke) var Autopoke = {};
 						}
 						if (Autopoke.dungeon !== undefined) {
 							if (this.helpFunctions.betterAccessToTown(this._currentQuest.dungeon) &&
-								App.game.wallet.hasAmount(new Amount(dungeonList[this._currentQuest.dungeon].tokenCost, GameConstants.Currency.dungeonToken)) && this._autoMove) {
+								App.game.wallet.hasAmount(new Amount(dungeonList[this._currentQuest.dungeon].tokenCost, GameConstants.Currency.dungeonToken)) &&
+								this._autoMove && highestPrio==this._questPriorityList.indexOf(this._currentQuest.constructor.name)) {
 								Autopoke.dungeon._runs = 1;
 								MapHelper.moveToTown(this._currentQuest.dungeon);
 								DungeonRunner.initializeDungeon(player.town().dungeon);
@@ -80,7 +90,8 @@ if (!Autopoke) var Autopoke = {};
 						if (App.game.gameState === 3) {
 							return;
 						}
-						if (this.helpFunctions.betterAccessToTown(TownList[this._currentQuest.gymTown].name) && this._autoMove) {
+						if (this.helpFunctions.betterAccessToTown(TownList[this._currentQuest.gymTown].name) &&
+						this._autoMove && highestPrio==this._questPriorityList.indexOf(this._currentQuest.constructor.name)) {
 							if (Autopoke.gym !== undefined) {
 								Autopoke.gym._runs = 1;
 							}
@@ -140,14 +151,15 @@ if (!Autopoke) var Autopoke = {};
 								console.log("No oneshot routes available");
 							}
 						}
-						if (route !== 1 && this._autoMove) {
+						if (route !== 1 && this._autoMove && highestPrio==this._questPriorityList.indexOf(this._currentQuest.constructor.name)) {
 							MapHelper.moveToRoute(route[1], route[0]);
 						}
 						break;
 
 					case DefeatPokemonsQuest:
 						route = [this._currentQuest.region, this._currentQuest.route];
-						if (this.helpFunctions.accessToRoute(route[1], route[0]) && this._autoMove) {
+						if (this.helpFunctions.accessToRoute(route[1], route[0]) &&
+							this._autoMove && highestPrio==this._questPriorityList.indexOf(this._currentQuest.constructor.name)) {
 							MapHelper.moveToRoute(route[1], route[0]);
 						} else {
 							console.log("Route is not available or autoMove is false");
@@ -161,7 +173,8 @@ if (!Autopoke) var Autopoke = {};
 							if (App.game.gameState === 3) {
 								return;
 							}
-							if (this.helpFunctions.betterAccessToTown(this._mostEfficientPlace) && this._autoMove) {
+							if (this.helpFunctions.betterAccessToTown(this._mostEfficientPlace) &&
+								this._autoMove && highestPrio==this._questPriorityList.indexOf(this._currentQuest.constructor.name)) {
 								if (Autopoke.gym !== undefined) {
 									Autopoke.gym._runs = 1;
 								}
@@ -174,7 +187,9 @@ if (!Autopoke) var Autopoke = {};
 
 						} else {
 							let route = this._mostEfficientPlace;
-							MapHelper.moveToRoute(route[1], route[0]);
+							if (this._autoMove && highestPrio==this._questPriorityList.indexOf(this._currentQuest.constructor.name)) {
+								MapHelper.moveToRoute(route[1], route[0]);
+							}
 
 						}
 
@@ -184,12 +199,30 @@ if (!Autopoke) var Autopoke = {};
 							if (Autopoke.farming.berry.type !== this._currentQuest.berryType && Autopoke.farming.interval.length !== 0) {
 								Autopoke.farming.berry = BerryType[this._currentQuest.berryType];
 							}
+							if (this._autoMove && highestPrio==this._questPriorityList.indexOf(this._currentQuest.constructor.name)) {
+									let route = 0;
+									if (Autopoke.clicking.interval.length !== 0) {
+										route = this.helpFunctions.highestAvailableOneClickRoute();
+										if (route === 0) {
+											console.log("No one-tappable routes are accessible");
+										}
+									}
+									if (route === 0) {
+										route = this.helpFunctions.highestAvailableOneShotRoute();
+										if (route === 0) {
+											console.log("No oneshot routes available");
+										}
+									}
+									if (route !== 1) {
+										MapHelper.moveToRoute(route[1], route[0]);
+									}
+								}
 						} else {
 							console.log("Enable farming module please");
 						}
 						break;
 					case HatchEggsQuest:
-						if (Autopoke.breeding !== undefined) {
+						if (Autopoke.breeding !== undefined && this._autoMove && highestPrio==this._questPriorityList.indexOf(this._currentQuest.constructor.name)) {
 							let r = this.helpFunctions.highestAvailableOneClickRoute();
 							if (r === 0 || Autopoke.clicking.interval.length === 0) {
 								let r = this.helpFunctions.highestAvailableOneShotRoute();
@@ -206,6 +239,26 @@ if (!Autopoke) var Autopoke = {};
 					case MineLayersQuest:
 						if (Autopoke.underground === undefined) {
 							console.log("Enable underground module please");
+						}
+						else {
+							if (this._autoMove && highestPrio==this._questPriorityList.indexOf(this._currentQuest.constructor.name)) {
+									let route = 0;
+									if (Autopoke.clicking.interval.length !== 0) {
+										route = this.helpFunctions.highestAvailableOneClickRoute();
+										if (route === 0) {
+											console.log("No one-tappable routes are accessible");
+										}
+									}
+									if (route === 0) {
+										route = this.helpFunctions.highestAvailableOneShotRoute();
+										if (route === 0) {
+											console.log("No oneshot routes available");
+										}
+									}
+									if (route !== 1) {
+										MapHelper.moveToRoute(route[1], route[0]);
+									}
+								}
 						}
 						break;
 					case UseOakItemQuest:
@@ -235,25 +288,29 @@ if (!Autopoke) var Autopoke = {};
 								}
 							case OakItems.OakItem.Amulet_Coin:
 							case OakItems.OakItem.Exp_Share:
-								let route = 0;
-								if (Autopoke.clicking.interval.length !== 0) {
-									route = this.helpFunctions.highestAvailableOneClickRoute();
-									if (route === 0) {
-										console.log("No one-tappable routes are accessible");
+							
+								if (this._autoMove && highestPrio==this._questPriorityList.indexOf(this._currentQuest.constructor.name)) {
+									let route = 0;
+									if (Autopoke.clicking.interval.length !== 0) {
+										route = this.helpFunctions.highestAvailableOneClickRoute();
+										if (route === 0) {
+											console.log("No one-tappable routes are accessible");
+										}
 									}
-								}
-								if (route === 0) {
-									route = this.helpFunctions.highestAvailableOneShotRoute();
 									if (route === 0) {
-										console.log("No oneshot routes available");
+										route = this.helpFunctions.highestAvailableOneShotRoute();
+										if (route === 0) {
+											console.log("No oneshot routes available");
+										}
 									}
-								}
-								if (route !== 1 && this._autoMove) {
-									MapHelper.moveToRoute(route[1], route[0]);
+									if (route !== 1) {
+										MapHelper.moveToRoute(route[1], route[0]);
+									}
 								}
 								break;
 						}
 						break;
+				}
 				}
 
 			}, this.intervalTime);
@@ -342,6 +399,20 @@ if (!Autopoke) var Autopoke = {};
 			},
 
 		},
+		_questPriorityList:["MineLayersQuest",
+							"HarvestBerriesQuest",
+							"CatchShiniesQuest",
+							"UseOakItemQuest",
+							"HatchEggsQuest",
+							"GainTokensQuest",
+							"GainMoneyQuest",
+							"UsePokeballQuest",
+							"GainShardsQuest",
+							"CapturePokemonsQuest",
+							"DefeatPokemonsQuest",
+							"DefeatGymQuest",
+							"DefeatDungeonQuest"],
+
 		_mostEfficientPlace: [],
 		_autoMove: true,
 		_captureShinyBall: 2,
