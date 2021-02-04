@@ -74,7 +74,7 @@ This needs to be run in console.\
 For the Desktop version open console with CTRL+SHIFT+I
 
 Run this in console: https://kazeshinu.github.io/Autopoke/Autopoke.js to load and start all modules
-or individual modules: https://kazeshinu.github.io/Autopoke/modules/{MODULE_NAME_LOWERCASE}.js\  
+or individual modules: https://kazeshinu.github.io/Autopoke/modules/{MODULE_NAME_LOWERCASE}.js  
 
 Access your modules with Autopoke.module i.e `Autopoke.dungeon.runs=100` `Autopoke.farming.Stop()`  
 
