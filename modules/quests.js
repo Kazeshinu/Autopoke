@@ -49,8 +49,9 @@ if (!Autopoke) var Autopoke = {};
 					this._mostEfficientPlace = [];
 				}
 
-				let route
-				let itemName
+				let route;
+				let itemName="";
+				let setBalls=false;
 				for (var i = 0;i<App.game.quests.currentQuests().length;i++) {
 					this._currentQuest=App.game.quests.currentQuests()[i];
 					
@@ -104,7 +105,15 @@ if (!Autopoke) var Autopoke = {};
 					case GainTokensQuest:
 					case CatchShiniesQuest:
 					case CapturePokemonsQuest:
-					case GainMoneyQuest:
+	
+					
+					
+						if (!setBalls) {
+							this._pokeballs.alreadyCaughtSelection = App.game.pokeballs._alreadyCaughtSelection();
+							this._pokeballs._alreadyCaughtShinySelection = App.game.pokeballs._alreadyCaughtShinySelection();
+							setBalls=true;
+								
+						}
 
 						itemName = ""
 						let buyAmount = 100;
@@ -138,6 +147,7 @@ if (!Autopoke) var Autopoke = {};
 								}
 							}
 						}
+					case GainMoneyQuest:
 						route = 0;
 						if (Autopoke.clicking.interval.length !== 0) {
 							route = this.helpFunctions.highestAvailableOneClickRoute();
@@ -273,6 +283,12 @@ if (!Autopoke) var Autopoke = {};
 						}
 						switch (oakItem) {
 							case OakItems.OakItem.Magic_Ball:
+							
+								if (!setBalls) {
+									this._pokeballs.alreadyCaughtSelection = App.game.pokeballs._alreadyCaughtSelection();
+									this._pokeballs._alreadyCaughtShinySelection = App.game.pokeballs._alreadyCaughtShinySelection();
+									setBalls=true;		
+								}
 								App.game.pokeballs._alreadyCaughtSelection(this._captureBall);
 								let itemName = GameConstants.Pokeball[this._captureBall];
 								let buyAmount = (this._currentQuest.focus() - this._currentQuest.initial());

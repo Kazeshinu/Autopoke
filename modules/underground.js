@@ -39,7 +39,7 @@ if (!Autopoke) var Autopoke = {};
 			}
 		},
 
-		_intervalTime: 1000 * App.game.underground.getEnergyRegenTime(),
+		_intervalTime: 1000,
 
 		get intervalTime() {
 			return this._intervalTime;
