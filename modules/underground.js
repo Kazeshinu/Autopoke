@@ -14,10 +14,10 @@ if (!Autopoke) var Autopoke = {};
 				}
 				let UG = App.game.underground
 				if (this._useRestores) {
-					let potionArray=['LargeRestore','MediumRestore','SmallRestore'];
-					for (var i = 0;i<potionArray.length;i++) {
+					let potionArray = ['LargeRestore', 'MediumRestore', 'SmallRestore'];
+					for (var i = 0; i < potionArray.length; i++) {
 						let potion = potionArray[i];
-						while (player._itemList[potion]()>0&&((UG.energy+UG.calculateItemEffect(GameConstants.EnergyRestoreSize[potion]))<=UG.getMaxEnergy())) {
+						while (player._itemList[potion]() > 0 && ((UG.energy + UG.calculateItemEffect(GameConstants.EnergyRestoreSize[potion])) <= UG.getMaxEnergy())) {
 							ItemList[potion].use();
 
 
@@ -66,7 +66,7 @@ if (!Autopoke) var Autopoke = {};
 			if (Mine.rewardNumbers.includes(reward.value)) {
 				let space = Array.from(UndergroundItem.list.find(v => v.id === reward.value).space)
 				if (space[0][0].rotations !== reward.rotations) {
-					space = rotate(space, [0,1,3,2].indexOf(reward.rotations))
+					space = rotate(space, [0, 1, 3, 2].indexOf(reward.rotations))
 				}
 				let X, Y;
 				for (let j = 0; j < space.length; j++) {
