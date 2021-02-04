@@ -9,22 +9,21 @@ if (!Autopoke) var Autopoke = {};
 		interval: [],
 		intervalFunction: function () {
 			return setInterval(() => {
-				if (Mine.loadingNewLayer == true) {
+				if (Mine.loadingNewLayer) {
 					return;
 				}
-				let UG = App.game.underground				
+				let UG = App.game.underground
 				if (this._useRestores) {
-				let potionArray=['LargeRestore','MediumRestore','SmallRestore'];
-				for (var i = 0;i<potionArray.length;i++) {
-					let potion = potionArray[i];
-					while (player._itemList[potion]()>0&&((UG.energy+UG.calculateItemEffect(GameConstants.EnergyRestoreSize[potion]))<=UG.getMaxEnergy())) {
-						ItemList[potion].use();
+					let potionArray = ['LargeRestore', 'MediumRestore', 'SmallRestore'];
+					for (var i = 0; i < potionArray.length; i++) {
+						let potion = potionArray[i];
+						while (player._itemList[potion]() > 0 && ((UG.energy + UG.calculateItemEffect(GameConstants.EnergyRestoreSize[potion])) <= UG.getMaxEnergy())) {
+							ItemList[potion].use();
 
-						
+
+						}
 					}
 				}
-				}
-				
 				(function () {
 					let starts = [{x: 1, y: 1}, {x: 0, y: 2}, {x: 2, y: 0}]
 					for (let s of starts) {
@@ -54,39 +53,38 @@ if (!Autopoke) var Autopoke = {};
 			}
 		},
 		smartMine: function (x, y) {
-            this.mine(x, y)
-            const reward = Mine.rewardGrid[x][y];
+			this.mine(x, y)
+			const reward = Mine.rewardGrid[x][y];
 
-            function rotate(ls, N) {
-                while (N--) {
-                    ls = ls[0].map((val, index) => ls.map(row => row[index]).reverse());
-                }
-				return ls;
-            }
+			function rotate(ls, N) {
+				while (N--) {
+					ls = ls[0].map((val, index) => ls.map(row => row[index]).reverse());
+				}
+				return ls
+			}
 
-            if (Mine.rewardNumbers.includes(reward.value)) {
-                let space = Array.from(UndergroundItem.list.find(v => v.id === reward.value).space)
-                if (space[0][0].rotations !== reward.rotations) {
-					console.log("rotation missmatch");
-                    space = rotate(space, [0,1,3,2].indexOf(reward.rotations))
-                }
-                let X, Y;
-                for (let j = 0; j < space.length; j++) {
-                    for (let i = 0; i < space[0].length; i++) {
-                        if (reward.x === space[j][i].x && reward.y === space[j][i].y) {
-                            [X, Y] = [j, i]
-                        }
-                    }
-                }
-                for (let j = 0; j < space.length; j++) {
-                    for (let i = 0; i < space[0].length; i++) {
-                        if (space[j][i].value !== 0) {
-                            this.mine(x + j - X, y + i - Y)
-                        }
-                    }
-                }
-            }
-        },
+			if (Mine.rewardNumbers.includes(reward.value)) {
+				let space = Array.from(UndergroundItem.list.find(v => v.id === reward.value).space)
+				if (space[0][0].rotations !== reward.rotations) {
+					space = rotate(space, [0, 1, 3, 2].indexOf(reward.rotations))
+				}
+				let X, Y;
+				for (let j = 0; j < space.length; j++) {
+					for (let i = 0; i < space[0].length; i++) {
+						if (reward.x === space[j][i].x && reward.y === space[j][i].y) {
+							[X, Y] = [j, i]
+						}
+					}
+				}
+				for (let j = 0; j < space.length; j++) {
+					for (let i = 0; i < space[0].length; i++) {
+						if (space[j][i].value !== 0) {
+							this.mine(x + j - X, y + i - Y)
+						}
+					}
+				}
+			}
+		},
 
 		_intervalTime: 1000,
 		_useRestores: true,
