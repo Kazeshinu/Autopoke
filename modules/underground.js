@@ -15,12 +15,9 @@ if (!Autopoke) var Autopoke = {};
 				let UG = App.game.underground
 				if (this._useRestores) {
 					let potionArray = ['LargeRestore', 'MediumRestore', 'SmallRestore'];
-					for (var i = 0; i < potionArray.length; i++) {
-						let potion = potionArray[i];
+					for (let potion of potionArray) {
 						while (player._itemList[potion]() > 0 && ((UG.energy + UG.calculateItemEffect(GameConstants.EnergyRestoreSize[potion])) <= UG.getMaxEnergy())) {
 							ItemList[potion].use();
-
-
 						}
 					}
 				}
@@ -37,10 +34,10 @@ if (!Autopoke) var Autopoke = {};
 						}
 					}
 					// mine random spots if the grid is done but the layer isn't
-					while (UG.energy >= UG.getMaxEnergy() - UG.getEnergyGain() - 1) {
+					while (UG.energy >= UG.getMaxEnergy() - UG.calculateItemEffect(GameConstants.EnergyRestoreSize["SmallRestore"]) - 1) {
 						const x = GameConstants.randomIntBetween(0, UG.getSizeY() - 1);
 						const y = GameConstants.randomIntBetween(0, Underground.sizeX - 1);
-						this.smartMine(x, y);
+						AutoUnderground.smartMine(x, y);
 					}
 				})()
 			}, this.intervalTime);
