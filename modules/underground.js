@@ -9,16 +9,15 @@ if (!Autopoke) var Autopoke = {};
 		interval: [],
 		intervalFunction: function () {
 			return setInterval(() => {
-				
 				if (Mine.loadingNewLayer == true) {
 					return;
 				}
-				
+				let UG = App.game.underground				
 				if (this._useRestores) {
 				let potionArray=['LargeRestore','MediumRestore','SmallRestore'];
 				for (var i = 0;i<potionArray.length;i++) {
 					let potion = potionArray[i];
-					while (player._itemList[potion]()>0&&((App.game.underground.energy+App.game.underground.calculateItemEffect(GameConstants.EnergyRestoreSize[potion]))<=App.game.underground.getMaxEnergy())) {
+					while (player._itemList[potion]()>0&&((UG.energy+UG.calculateItemEffect(GameConstants.EnergyRestoreSize[potion]))<=UG.getMaxEnergy())) {
 						ItemList[potion].use();
 
 						
@@ -26,38 +25,71 @@ if (!Autopoke) var Autopoke = {};
 				}
 				}
 				
-				while (App.game.underground.energy >= App.game.underground.getMaxEnergy() - App.game.underground.calculateItemEffect(GameConstants.EnergyRestoreSize["SmallRestore"])) {
-					const x = GameConstants.randomIntBetween(0, App.game.underground.getSizeY() - 1);
-					const y = GameConstants.randomIntBetween(0, Underground.sizeX - 1);
-					this.smartMine(x, y);
-				}
+				(function () {
+					let starts = [{x: 1, y: 1}, {x: 0, y: 2}, {x: 2, y: 0}]
+					for (let s of starts) {
+						for (let y = s.y; y < Underground.sizeX; y += 3) { // these two are swapped so that y goes vertical and x goes horizontal
+							for (let x = s.x; x < UG.getSizeY(); x += 3) {
+								if (UG.energy < UG.getMaxEnergy() - UG.calculateItemEffect(GameConstants.EnergyRestoreSize["SmallRestore"])) {
+									return
+								}
+								AutoUnderground.smartMine(x, y)
+							}
+						}
+					}
+					// mine random spots if the grid is done but the layer isn't
+					while (UG.energy >= UG.getMaxEnergy() - UG.getEnergyGain() - 1) {
+						const x = GameConstants.randomIntBetween(0, UG.getSizeY() - 1);
+						const y = GameConstants.randomIntBetween(0, Underground.sizeX - 1);
+						this.smartMine(x, y);
+					}
+				})()
 			}, this.intervalTime);
 		},
 
 		// for some reason X is down and Y is right
-		smartMine: function (x, y) {
+		mine: function (x, y) {
 			while (Mine.grid[x][y]() > 0 && App.game.underground.energy >= Underground.CHISEL_ENERGY) {
 				Mine.chisel(x, y);
 			}
-			const reward = Mine.rewardGrid[x][y];
-			if (Mine.rewardNumbers.includes(reward.value)) {
-				if (reward.revealed === 1 && Mine.grid[Mine.normalizeY(x - 1)][y]() > 0) {
-					this.smartMine(Mine.normalizeY(x - 1), y);
-				}
-				if (reward.revealed === 1 && Mine.grid[Mine.normalizeY(x + 1)][y]() > 0) {
-					this.smartMine(Mine.normalizeY(x + 1), y);
-				}
-				if (reward.revealed === 1 && Mine.grid[x][Mine.normalizeX(y + 1)]() > 0) {
-					this.smartMine(x, Mine.normalizeX(y + 1));
-				}
-				if (reward.revealed === 1 && Mine.grid[x][Mine.normalizeX(y - 1)]() > 0) {
-					this.smartMine(x, Mine.normalizeX(y - 1));
-				}
-			}
 		},
+		smartMine: function (x, y) {
+            this.mine(x, y)
+            const reward = Mine.rewardGrid[x][y];
+
+            function rotate(ls, N) {
+                while (N--) {
+                    ls = ls[0].map((val, index) => ls.map(row => row[index]).reverse());
+                }
+				return ls;
+            }
+
+            if (Mine.rewardNumbers.includes(reward.value)) {
+                let space = Array.from(UndergroundItem.list.find(v => v.id === reward.value).space)
+                if (space[0][0].rotations !== reward.rotations) {
+					console.log("rotation missmatch");
+                    space = rotate(space, [0,1,3,2].indexOf(reward.rotations))
+                }
+                let X, Y;
+                for (let j = 0; j < space.length; j++) {
+                    for (let i = 0; i < space[0].length; i++) {
+                        if (reward.x === space[j][i].x && reward.y === space[j][i].y) {
+                            [X, Y] = [j, i]
+                        }
+                    }
+                }
+                for (let j = 0; j < space.length; j++) {
+                    for (let i = 0; i < space[0].length; i++) {
+                        if (space[j][i].value !== 0) {
+                            this.mine(x + j - X, y + i - Y)
+                        }
+                    }
+                }
+            }
+        },
 
 		_intervalTime: 1000,
-
+		_useRestores: true,
 		get intervalTime() {
 			return this._intervalTime;
 		},
@@ -70,9 +102,6 @@ if (!Autopoke) var Autopoke = {};
 				console.log("Not a whole number");
 			}
 		},
-		
-		_useRestores: true,
-		
 		Start: function () {
 			clearInterval(this.interval.pop());
 			this.interval.push(this.intervalFunction());
