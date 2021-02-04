@@ -61,7 +61,8 @@ if (!Autopoke) var Autopoke = {};
 						let towns = this.helpFunctions.getAvailableShopsByItemName(itemName);
 						let item = towns[0].shop.items.filter(item => item.name === itemName)[0];
 						if (App.game.wallet.hasAmount(new Amount(item.totalPrice(this._currentQuest.amount), item.currency)) && this._autoMove) {
-							MapHelper.moveToTown(towns[0].name)
+							MapHelper.moveToTown(towns[0].name);
+							player.region=player.town().region;
 							item.buy(this._currentQuest.amount);
 						} else {
 							console.log(`Need more gold before buying ${this._currentQuest.amount} ${itemName} or autoMove is false`);
@@ -78,6 +79,7 @@ if (!Autopoke) var Autopoke = {};
 								this._autoMove && highestPrio==this._questPriorityList.indexOf(this._currentQuest.constructor.name)) {
 								Autopoke.dungeon._runs = 1;
 								MapHelper.moveToTown(this._currentQuest.dungeon);
+								player.region=player.town().region;
 								DungeonRunner.initializeDungeon(player.town().dungeon);
 							} else {
 								console.log("Not enough tokens or no access to the dungeon or autoMove is false");
@@ -96,6 +98,7 @@ if (!Autopoke) var Autopoke = {};
 								Autopoke.gym._runs = 1;
 							}
 							MapHelper.moveToTown(TownList[this._currentQuest.gymTown].name);
+							player.region=player.town().region;
 							GymRunner.startGym(gymList[this._currentQuest.gymTown]);
 						} else {
 							console.log(`Can't access ${this._currentQuest.gymTown.name} or autoMove is false`);
@@ -140,7 +143,8 @@ if (!Autopoke) var Autopoke = {};
 								let towns = this.helpFunctions.getAvailableShopsByItemName(itemName);
 								let item = towns[0].shop.items.filter(item => item.name === itemName)[0];
 								if (App.game.wallet.hasAmount(new Amount(item.totalPrice(buyAmount), item.currency)) && this._autoMove) {
-									MapHelper.moveToTown(towns[0].name)
+									MapHelper.moveToTown(towns[0].name);
+									player.region=player.town().region;
 									item.buy(buyAmount);
 								} else {
 									console.log("All out of Balls and cant afford them or autoMove is false");
@@ -189,6 +193,7 @@ if (!Autopoke) var Autopoke = {};
 									Autopoke.gym._runs = 1;
 								}
 								MapHelper.moveToTown(this._mostEfficientPlace);
+								player.region=player.town().region;
 								GymRunner.startGym(gymList[this._mostEfficientPlace]);
 
 							} else {
@@ -298,6 +303,7 @@ if (!Autopoke) var Autopoke = {};
 										let item = towns[0].shop.items.filter(item => item.name === itemName)[0];
 										if (App.game.wallet.hasAmount(new Amount(item.totalPrice(buyAmount), item.currency)) && this._autoMove) {
 											MapHelper.moveToTown(towns[0].name)
+											player.region=player.town().region;
 											item.buy(buyAmount);
 										} else {
 											console.log("All out of Balls and can't afford them or autoMove is false");
