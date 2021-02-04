@@ -32,7 +32,7 @@ if (!Autopoke) var Autopoke = {};
 								if (UG.energy < UG.getMaxEnergy() - UG.calculateItemEffect(GameConstants.EnergyRestoreSize["SmallRestore"])) {
 									return
 								}
-								AutoUnderground.smartMine(x, y)
+								this.smartMine(x, y)
 							}
 						}
 					}
@@ -42,7 +42,7 @@ if (!Autopoke) var Autopoke = {};
 						const y = GameConstants.randomIntBetween(0, Underground.sizeX - 1);
 						this.smartMine(x, y);
 					}
-				})()
+				}).bind(this)()
 			}, this.intervalTime);
 		},
 
