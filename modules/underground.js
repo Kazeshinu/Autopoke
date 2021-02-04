@@ -9,7 +9,24 @@ if (!Autopoke) var Autopoke = {};
 		interval: [],
 		intervalFunction: function () {
 			return setInterval(() => {
-				while (App.game.underground.energy >= App.game.underground.getMaxEnergy() - App.game.underground.getEnergyGain() - 1) {
+				
+				if (Mine.loadingNewLayer == true) {
+					return;
+				}
+				
+				if (this._useRestores) {
+				let potionArray=['LargeRestore','MediumRestore','SmallRestore'];
+				for (var i = 0;i<potionArray.length;i++) {
+					let potion = potionArray[i];
+					while (player._itemList[potion]()>0&&((App.game.underground.energy+App.game.underground.calculateItemEffect(GameConstants.EnergyRestoreSize[potion]))<=App.game.underground.getMaxEnergy())) {
+						ItemList[potion].use();
+
+						
+					}
+				}
+				}
+				
+				while (App.game.underground.energy >= App.game.underground.getMaxEnergy() - App.game.underground.calculateItemEffect(GameConstants.EnergyRestoreSize["SmallRestore"])) {
 					const x = GameConstants.randomIntBetween(0, App.game.underground.getSizeY() - 1);
 					const y = GameConstants.randomIntBetween(0, Underground.sizeX - 1);
 					this.smartMine(x, y);
@@ -53,6 +70,9 @@ if (!Autopoke) var Autopoke = {};
 				console.log("Not a whole number");
 			}
 		},
+		
+		_useRestores: true,
+		
 		Start: function () {
 			clearInterval(this.interval.pop());
 			this.interval.push(this.intervalFunction());
