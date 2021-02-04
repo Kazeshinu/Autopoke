@@ -9,13 +9,27 @@ if (!Autopoke) var Autopoke = {};
 		interval: [],
 		intervalFunction: function () {
 			return setInterval(() => {
+				if (Mine.loadingNewLayer) {
+					return;
+				}
 				let UG = App.game.underground
+				if (this._useRestores) {
+					let potionArray=['LargeRestore','MediumRestore','SmallRestore'];
+					for (var i = 0;i<potionArray.length;i++) {
+						let potion = potionArray[i];
+						while (player._itemList[potion]()>0&&((UG.energy+UG.calculateItemEffect(GameConstants.EnergyRestoreSize[potion]))<=UG.getMaxEnergy())) {
+							ItemList[potion].use();
+
+
+						}
+					}
+				}
 				(function () {
 					let starts = [{x: 1, y: 1}, {x: 0, y: 2}, {x: 2, y: 0}]
 					for (let s of starts) {
 						for (let y = s.y; y < Underground.sizeX; y += 3) { // these two are swapped so that y goes vertical and x goes horizontal
 							for (let x = s.x; x < UG.getSizeY(); x += 3) {
-								if (UG.energy < UG.getMaxEnergy() - UG.getEnergyGain()) {
+								if (UG.energy < UG.getMaxEnergy() - UG.calculateItemEffect(GameConstants.EnergyRestoreSize["SmallRestore"])) {
 									return
 								}
 								AutoUnderground.smartMine(x, y)
@@ -46,12 +60,13 @@ if (!Autopoke) var Autopoke = {};
 				while (N--) {
 					ls = ls[0].map((val, index) => ls.map(row => row[index]).reverse());
 				}
+				return ls
 			}
 
 			if (Mine.rewardNumbers.includes(reward.value)) {
 				let space = Array.from(UndergroundItem.list.find(v => v.id === reward.value).space)
 				if (space[0][0].rotations !== reward.rotations) {
-					rotate(space, Math.abs(reward.rotations - space[0][0].rotations))
+					space = rotate(space, [0,1,3,2].indexOf(reward.rotations))
 				}
 				let X, Y;
 				for (let j = 0; j < space.length; j++) {
@@ -71,8 +86,8 @@ if (!Autopoke) var Autopoke = {};
 			}
 		},
 
-		_intervalTime: 1000 * App.game.underground.getEnergyRegenTime(),
-
+		_intervalTime: 1000,
+		_useRestores: true,
 		get intervalTime() {
 			return this._intervalTime;
 		},
