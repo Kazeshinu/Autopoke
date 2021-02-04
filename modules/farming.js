@@ -11,7 +11,7 @@ if (!Autopoke) var Autopoke = {};
 			return setInterval(() => {
 				App.game.farming.harvestAll();
 				App.game.farming.plantAll(this.berry.type);
-			}, this.berry.growthTime[3] + 1);
+			}, this.berry.growthTime[3] + this.intervalTime);
 		},
 
 		_berry: App.game.farming.berryData[BerryType.Cheri],
