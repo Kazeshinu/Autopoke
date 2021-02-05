@@ -23,7 +23,6 @@ if (!Autopoke) Autopoke = {};
 				}
 			}, this.intervalTime);
 		},
-		_intervalTime: 50,
 		get cps() {
 			return 1000 / this._intervalTime;
 		},
@@ -35,6 +34,7 @@ if (!Autopoke) Autopoke = {};
 				console.log("That is not a valid number");
 			}
 		},
+		_intervalTime: 50,
 		get intervalTime() {
 			return this._intervalTime;
 		},

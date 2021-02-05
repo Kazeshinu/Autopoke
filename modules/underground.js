@@ -84,8 +84,29 @@ if (!Autopoke) Autopoke = {};
 		_potionArray: ['LargeRestore', 'MediumRestore', 'SmallRestore'],
 
 		_minEnergy: 10,
-		_intervalTime: 1000,
+		get minEnergy() {
+			return this._intervalTime;
+		},
+		set minEnergy(val) {
+			if (Number.isInteger(val)) {
+				this._minEnergy = val;
+			} else {
+				console.log("That is not a valid number");
+			}
+		},
+
 		_useRestores: false,
+		get useRestores() {
+			return this._useRestores;
+		},
+		set useRestores(val) {
+			if (val === true || val === false) {
+				this._useRestores = val;
+			} else {
+				console.log("Not true or false");
+			}
+		},
+		_intervalTime: 1000,
 		get intervalTime() {
 			return this._intervalTime;
 		},

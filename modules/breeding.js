@@ -71,8 +71,9 @@ if (!Autopoke) Autopoke = {};
 				console.log("That is not a valid number");
 			}
 		},
-		_priorityEgg: true,
+
 		_eggCaught: CaughtStatus.NotCaught,
+		_priorityEgg: true,
 		get prioritiseEggs() {
 			return this._priorityEgg;
 		},
