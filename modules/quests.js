@@ -382,7 +382,7 @@ if (!Autopoke) Autopoke = {};
 			},
 			betterAccessToTown: function (townName) {
 				const town = TownList[townName];
-				return this.latestDockUnlocked() ? town.isUnlocked() : (town.isUnlocked() && (town.region === player.highestRegion))
+				return this.latestDockUnlocked() ? town.isUnlocked() : (town.isUnlocked() && (town.region === player.highestRegion()))
 			},
 			highestAvailableOneShotRoute: function () {
 				const routes = Routes.regionRoutes.map(r => [r.region, r.number]).filter(r => this.accessToRoute(r[1], r[0]));
