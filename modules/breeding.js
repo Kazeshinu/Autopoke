@@ -15,15 +15,21 @@ if (!Autopoke) var Autopoke = {};
 					App.game.breeding.hatchPokemonEgg(1);
 					App.game.breeding.hatchPokemonEgg(2);
 					App.game.breeding.hatchPokemonEgg(3);
+
 				}
 				if ((App.game.breeding.queueList().length < Math.min(this._maxQueueSlots,App.game.breeding.queueSlots())) || App.game.breeding.hasFreeEggSlot()) {
-					var nextPokemon = App.game.party.caughtPokemon.filter(
-						partyPokemon => BreedingController.visible(partyPokemon)()
-					)[0];
-					if (nextPokemon) {
-						App.game.breeding.addPokemonToHatchery(nextPokemon);
-					} else {
-						console.log("No pokemon visible in the hatching list consider checking your filter or just get more pokemons");
+					if (this._priorityEgg && this.helpFunctions.hasEgg()) {
+						if (App.game.breeding.hasFreeEggSlot()) {
+							ItemList[this.helpFunctions.nextEgg()].use();
+						}
+					}
+					else {
+						let nextPokemon = App.game.party.caughtPokemon.filter(
+							partyPokemon => BreedingController.visible(partyPokemon)()
+						)[0];
+						if (nextPokemon) {
+							App.game.breeding.addPokemonToHatchery(nextPokemon);
+						}
 					}
 				}
 			}, this.intervalTime);
@@ -45,7 +51,7 @@ if (!Autopoke) var Autopoke = {};
 		},
 		_maxQueueSlots:2,
 		get maxQueueSlots() {
-			return this._intervalTime;
+			return this._maxQueueSlots;
 		},
 
 		set maxQueueSlots(val) {
@@ -55,6 +61,34 @@ if (!Autopoke) var Autopoke = {};
 				console.log("Not a whole number");
 			}
 		},
+		_priorityEgg:true,
+		get prioritiseEggs() {
+			return this._priorityEgg;
+		},
+
+		set prioritiseEggs(val) {
+			if (val === true || val === false) {
+				this._priorityEgg = val;
+			} else {
+				console.log("Use true or false");
+			}
+		},
+		helpFunctions: {
+			hasEgg: function () {
+				let allowedEggs = GameHelper.enumStrings(GameConstants.EggItemType);
+				return 0<allowedEggs.filter(X=>player.itemList[X]()>0).length;
+			},
+			nextEgg: function () {
+				let allowedEggs = GameHelper.enumStrings(GameConstants.EggItemType);
+				return allowedEggs.find(X=>player.itemList[X]()>0);
+			}
+
+
+
+
+		},
+
+
 		Start: function () {
 			clearInterval(this.interval.pop());
 			this.interval.push(this.intervalFunction());
