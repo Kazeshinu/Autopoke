@@ -35,7 +35,7 @@ for (let i = 0, len = modules.length; i < len; i++) {
 			return function () {
 				if (typeof Autopoke[modules[i]] !== "undefined") {
 					Autopoke[modules[i]].Start();
-					console.log(`Autopoke ${AutopokeVersion} loaded module: " + ${modules[i]}`);
+					console.log(`Autopoke ${AutopokeVersion} loaded module: ${modules[i]}`);
 					Notifier.notify({
 						title: "Autopoke " + AutopokeVersion,
 						message: "Loaded: " + modules[i],
@@ -48,7 +48,7 @@ for (let i = 0, len = modules.length; i < len; i++) {
 					x = x + 1;
 				}
 				if (x >= 10) {
-					console.log(`Autopoke ${AutopokeVersion} error module: " + ${modules[i]}`);
+					console.log(`Autopoke ${AutopokeVersion} error module: ${modules[i]}`);
 					Notifier.notify({
 						title: "Autopoke " + AutopokeVersion,
 						message: "Error loading: " + modules[i],
