@@ -391,11 +391,9 @@ if (!Autopoke) var Autopoke = {};
 						.filter(p => p.type1 === type || p.type2 === type).length / Object.values(r.pokemon).flat().length
 				]).filter(r => r[1] > 0)
 			},
-			mostEfficientPlaceForShardType: function (type) {
+			routeCalculatePerSec: function (routes) {
 				let average = (ls) => ls.reduce((a, b) => a + b, 0) / ls.length
-				let routeShards = this.routeShardsRateForType(type)
-				let gymShards = this.gymShardsRateForType(type)
-				let routeShardsPerSec = routeShards.map(r => {
+				return routes.map(r => {
 					let [[region, route], rate] = r
 					let pokemon = Object.values(Routes.getRoute(region, route).pokemon).flat().map(p => PokemonHelper.getPokemonByName(p))
 					let hits = pokemon.map(p => App.game.party.calculatePokemonAttack(p.type1, p.type2))
@@ -404,7 +402,10 @@ if (!Autopoke) var Autopoke = {};
 						.map(d => Math.ceil(PokemonFactory.routeHealth(route, region) / d))
 					return [[region, route], rate / Math.min(average(hits), average(clicks) / 20)]
 				})
-				let gymShardsPerSec = gymShards.map(r => {
+			},
+			gymCalculatePerSec: function (gyms) {
+				let average = (ls) => ls.reduce((a, b) => a + b, 0) / ls.length
+				return gyms.map(r => {
 					let [gym, rate] = r
 					let hits = gymList[gym].pokemons.map(p => {
 						let poke = PokemonHelper.getPokemonByName(p.name)
@@ -413,12 +414,35 @@ if (!Autopoke) var Autopoke = {};
 					let clicks = gymList[gym].pokemons.map(p => Math.ceil(p.maxHealth / App.game.party.calculateClickAttack()))
 					return [gym, rate / Math.min(average(hits), average(clicks) / 20)]
 				})
-
-				let bestRoute = routeShardsPerSec.sort((r1, r2) => r2[1] - r1[1])[0]
-				let bestGym = gymShardsPerSec.sort((r1, r2) => r2[1] - r1[1])[0]
-				return bestGym[1] > bestRoute[1] ? bestGym[0] : bestRoute[0]
 			},
-
+			calculateBest: function (routes, gyms, n = 1) {
+				let both = routes.concat(gyms)
+				both.sort((r1, r2) => r2[1] - r1[1])
+				if (n === 1)
+					return both[0]
+				return both.slice(0, n)
+			},
+			mostEfficientPlaceForShardType: function (type, n = 1) {
+				let routeShards = this.routeShardsRateForType(type)
+				let gymShards = this.gymShardsRateForType(type)
+				let routeShardsPerSec = this.routeCalculatePerSec(routeShards)
+				let gymShardsPerSec = this.gymCalculatePerSec(gymShards)
+				return this.calculateBest(routeShardsPerSec, gymShardsPerSec, n)
+			},
+			mostEfficientPlaceForMoney: function (n = 1) {
+				let average = (ls) => ls.reduce((a, b) => a + b, 0) / ls.length
+				let availableRoutes = Routes.regionRoutes.filter(r => this.accessToRoute(r.number, r.region))
+				let availableGyms = Object.values(gymList).filter(g => Gym.isUnlocked(g) && this.betterAccessToTown(g.town))
+				const bonus = App.game.wallet.multiplier.getBonus('money', true)
+				let routeMoney = availableRoutes.map(r => {
+					let arr = Array(100).fill(0).map(() => PokemonFactory.routeMoney(r.number, r.region))
+					return [[r.region, r.number], bonus * average(arr)]
+				})
+				let gymMoney = availableGyms.map(g => [g.town, bonus * g.moneyReward / g.pokemons.length])
+				let routeMoneyPerSec = this.routeCalculatePerSec(routeMoney)
+				let gymMoneyPerSec = this.gymCalculatePerSec(gymMoney)
+				return this.calculateBest(routeMoneyPerSec, gymMoneyPerSec, n)
+			}
 		},
 		_questPriorityList: [
 			"MineLayersQuest",
