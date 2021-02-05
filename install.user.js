@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         AutoPoke
-// @version      1.0
+// @version      0.5
 // @namespace    https://Kazeshinu.github.io/Autopoke/
 // @updateURL    https://Kazeshinu.github.io/Autopoke/install.user.js
 // @description  Automate pokéclicker
