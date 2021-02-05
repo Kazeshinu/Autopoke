@@ -11,13 +11,15 @@
 
 (function () {
 	const checkReady = setInterval(function () {
-		if (typeof App.game.interval !== 'undefined') {
-			var script = document.createElement('script');
-			script.id = 'AutoPoke';
-			script.src = 'https://Kazeshinu.github.io/Autopoke/Autopoke.js';
-			script.setAttribute('crossorigin', "anonymous");
-			document.head.appendChild(script);
-			clearInterval(checkReady);
+		if (typeof App.game !== 'undefined') {
+			if (typeof App.game.interval !== 'undefined') {
+				var script = document.createElement('script');
+				script.id = 'AutoPoke';
+				script.src = 'https://Kazeshinu.github.io/Autopoke/Autopoke.js';
+				script.setAttribute('crossorigin', "anonymous");
+				document.head.appendChild(script);
+				clearInterval(checkReady);
+			}
 		}
 	}, 1000);
 })();
