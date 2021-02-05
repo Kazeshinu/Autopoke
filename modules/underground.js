@@ -14,13 +14,9 @@ if (!Autopoke) Autopoke = {};
 				}
 				let UG = App.game.underground
 				if (this._useRestores) {
-
-					for (let i = 0; i < this._potionArray.length; i++) {
-						let potion = this._potionArray[i];
+					for (let potion of this._potionArray) {
 						while (player._itemList[potion]() > 0 && ((UG.energy + UG.calculateItemEffect(GameConstants.EnergyRestoreSize[potion])) <= UG.getMaxEnergy())) {
 							ItemList[potion].use();
-
-
 						}
 					}
 				}
