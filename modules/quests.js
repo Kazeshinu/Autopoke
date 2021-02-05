@@ -516,7 +516,6 @@ if (!Autopoke) Autopoke = {};
 		}
 
 	}
-	Autopoke.quests = AutoQuests;
 
 	App.game.pokeballs._alreadyCaughtSelection.subscribe(function (newValue) {
 		if (!((Autopoke.quests._currentQuest instanceof UsePokeballQuest) ||
