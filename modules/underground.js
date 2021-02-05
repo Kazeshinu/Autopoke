@@ -1,10 +1,10 @@
 //Auto Underground
 
-if (!Autopoke) var Autopoke = {};
+if (!Autopoke) Autopoke = {};
 
 (function () {
 
-	const AutoUnderground = {
+	Autopoke.underground = {
 
 		interval: [],
 		intervalFunction: function () {
@@ -14,8 +14,7 @@ if (!Autopoke) var Autopoke = {};
 				}
 				let UG = App.game.underground
 				if (this._useRestores) {
-					let potionArray = ['LargeRestore', 'MediumRestore', 'SmallRestore'];
-					for (let potion of potionArray) {
+					for (let potion of this._potionArray) {
 						while (player._itemList[potion]() > 0 && ((UG.energy + UG.calculateItemEffect(GameConstants.EnergyRestoreSize[potion])) <= UG.getMaxEnergy())) {
 							ItemList[potion].use();
 						}
@@ -26,7 +25,7 @@ if (!Autopoke) var Autopoke = {};
 					for (let s of starts) {
 						for (let y = s.y; y < Underground.sizeX; y += 3) { // these two are swapped so that y goes vertical and x goes horizontal
 							for (let x = s.x; x < UG.getSizeY(); x += 3) {
-								if (UG.energy < UG.getMaxEnergy() - UG.calculateItemEffect(GameConstants.EnergyRestoreSize["SmallRestore"])) {
+								if (UG.energy < this._minEnergy) {
 									return
 								}
 								this.smartMine(x, y)
@@ -34,7 +33,7 @@ if (!Autopoke) var Autopoke = {};
 						}
 					}
 					// mine random spots if the grid is done but the layer isn't
-					while (UG.energy >= UG.getMaxEnergy() - UG.calculateItemEffect(GameConstants.EnergyRestoreSize["SmallRestore"]) - 1) {
+					while (UG.energy >= this._minEnergy) {
 						const x = GameConstants.randomIntBetween(0, UG.getSizeY() - 1);
 						const y = GameConstants.randomIntBetween(0, Underground.sizeX - 1);
 						this.smartMine(x, y);
@@ -82,9 +81,11 @@ if (!Autopoke) var Autopoke = {};
 				}
 			}
 		},
+		_potionArray: ['LargeRestore', 'MediumRestore', 'SmallRestore'],
 
+		_minEnergy: 10,
 		_intervalTime: 1000,
-		_useRestores: true,
+		_useRestores: false,
 		get intervalTime() {
 			return this._intervalTime;
 		},
@@ -94,7 +95,7 @@ if (!Autopoke) var Autopoke = {};
 				this._intervalTime = val;
 				this.Start();
 			} else {
-				console.log("Not a whole number");
+				console.log("That is not a valid number");
 			}
 		},
 		Start: function () {
@@ -105,6 +106,5 @@ if (!Autopoke) var Autopoke = {};
 		Stop: function () {
 			clearInterval(this.interval.pop());
 		}
-	}
-	Autopoke.underground = AutoUnderground;
+	};
 })();

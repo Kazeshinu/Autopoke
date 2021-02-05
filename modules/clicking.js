@@ -1,10 +1,10 @@
 // Auto Clicking
 
-if (!Autopoke) var Autopoke = {};
+if (!Autopoke) Autopoke = {};
 
 (function () {
 
-	const AutoClicking = {
+	Autopoke.clicking = {
 
 		interval: [],
 
@@ -32,7 +32,7 @@ if (!Autopoke) var Autopoke = {};
 				this._intervalTime = Math.floor(1000 / val);
 				this.Start();
 			} else {
-				console.log("Not a number");
+				console.log("That is not a valid number");
 			}
 		},
 		get intervalTime() {
@@ -43,7 +43,7 @@ if (!Autopoke) var Autopoke = {};
 				this._intervalTime = val;
 				this.Start();
 			} else {
-				console.log("Not a whole number");
+				console.log("That is not a valid number");
 			}
 		},
 
@@ -56,6 +56,5 @@ if (!Autopoke) var Autopoke = {};
 			clearInterval(this.interval.pop());
 		}
 
-	}
-	Autopoke.clicking = AutoClicking;
+	};
 })();

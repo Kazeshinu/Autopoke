@@ -1,10 +1,10 @@
 //Auto Dungeon
 
-if (!Autopoke) var Autopoke = {};
+if (!Autopoke) Autopoke = {};
 
 (function () {
 
-	const AutoDungeon = {
+	Autopoke.dungeon = {
 
 		interval: [],
 
@@ -41,8 +41,11 @@ if (!Autopoke) var Autopoke = {};
 					DRmap.moveLeft();
 				} else if (pos.y > 0 && (!up().isVisible || (this.openChests && up().type() === 3))) {
 					DRmap.moveUp();
-				} else if (pos.y < DRmap.size - 1 && (!down().isVisible || (this.openChests && down().type() === 3))) {
+				} else if (pos.y < DRmap.size - 1 && (!down().isVisible || (this.openChests && down().type() === 3) || down().type() === 1)) {
 					DRmap.moveDown();
+					if (DRmap.currentTile().type() === 1) { // IF Entrance move right instantly. to avoid being able to exit if holding space
+						DRmap.moveRight();
+					}
 				} else if (pos.x < DRmap.size - 1 && (!right().isVisible || (this.openChests && right().type() === 3))) {
 					DRmap.moveRight();
 				} else {
@@ -80,7 +83,7 @@ if (!Autopoke) var Autopoke = {};
 			if (Number.isInteger(val)) {
 				this._runs = val;
 			} else {
-				console.log("Not a whole number");
+				console.log("That is not a valid number");
 			}
 		},
 
@@ -111,7 +114,7 @@ if (!Autopoke) var Autopoke = {};
 				this._intervalTime = val;
 				this.Start();
 			} else {
-				console.log("Not a whole number");
+				console.log("That is not a valid number");
 			}
 		},
 
@@ -124,8 +127,7 @@ if (!Autopoke) var Autopoke = {};
 			this._runs = 1
 		}
 
-	}
-	Autopoke.dungeon = AutoDungeon;
+	};
 	Autopoke.dungeon._dungeon = Autopoke.dungeon._dummyDungeon;
 	DungeonRunner.dungeonObservable = ko.observable(Autopoke.dungeon._dummyDungeon);
 	DungeonRunner.initializeDungeon = (function () {
