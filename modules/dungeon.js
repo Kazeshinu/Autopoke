@@ -83,7 +83,7 @@ if (!Autopoke) Autopoke = {};
 			if (Number.isInteger(val)) {
 				this._runs = val;
 			} else {
-				console.log("Not a whole number");
+				console.log("That is not a valid number");
 			}
 		},
 
@@ -114,7 +114,7 @@ if (!Autopoke) Autopoke = {};
 				this._intervalTime = val;
 				this.Start();
 			} else {
-				console.log("Not a whole number");
+				console.log("That is not a valid number");
 			}
 		},
 
