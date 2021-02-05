@@ -8,7 +8,7 @@ Also works on the Desktop version CTRL+SHIFT+I to open Console
     const checkReady = setInterval(function () {
         if (typeof App.game !== 'undefined') {
             if (typeof App.game.interval !== 'undefined') {
-                var script = document.createElement('script');
+                let script = document.createElement('script');
                 script.id = 'AutoPoke';
                 script.src = 'https://Kazeshinu.github.io/Autopoke/Autopoke.js';
                 script.setAttribute('crossorigin', "anonymous");
