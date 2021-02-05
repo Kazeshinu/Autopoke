@@ -379,7 +379,7 @@ if (!Autopoke) var Autopoke = {};
 			},
 			gymShardsRateForType: function (type) {
 				return Object.values(gymList)
-					.filter(g => Gym.isUnlocked(g))
+					.filter(g => Gym.isUnlocked(g) && this.betterAccessToTown(g.town))
 					.map(g => [g.town, (g.pokemons
 						.map(p => PokemonHelper.getPokemonByName(p.name)))
 						.filter(p => p.type1 === type || p.type2 === type).length / g.pokemons.length * GameConstants.GYM_SHARDS])
