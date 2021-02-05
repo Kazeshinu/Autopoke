@@ -37,7 +37,7 @@ if (!Autopoke) var Autopoke = {};
 					while (UG.energy >= UG.getMaxEnergy() - UG.calculateItemEffect(GameConstants.EnergyRestoreSize["SmallRestore"]) - 1) {
 						const x = GameConstants.randomIntBetween(0, UG.getSizeY() - 1);
 						const y = GameConstants.randomIntBetween(0, Underground.sizeX - 1);
-						AutoUnderground.smartMine(x, y);
+						this.smartMine(x, y);
 					}
 				}).bind(this)()
 			}, this.intervalTime);
