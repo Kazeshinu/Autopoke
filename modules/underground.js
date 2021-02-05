@@ -3,6 +3,7 @@
 if (!Autopoke) Autopoke = {};
 
 (function () {
+	let AU = App.game.underground;
 
 	Autopoke.underground = {
 
@@ -12,10 +13,9 @@ if (!Autopoke) Autopoke = {};
 				if (Mine.loadingNewLayer) {
 					return;
 				}
-				let UG = App.game.underground
 				if (this._useRestores) {
 					for (let potion of this._potionArray) {
-						while (player._itemList[potion]() > 0 && ((UG.energy + UG.calculateItemEffect(GameConstants.EnergyRestoreSize[potion])) <= UG.getMaxEnergy())) {
+						while (player._itemList[potion]() > 0 && ((AU.energy + AU.calculateItemEffect(GameConstants.EnergyRestoreSize[potion])) <= AU.getMaxEnergy())) {
 							ItemList[potion].use();
 						}
 					}
@@ -24,8 +24,8 @@ if (!Autopoke) Autopoke = {};
 					let starts = [{x: 1, y: 1}, {x: 0, y: 2}, {x: 2, y: 0}]
 					for (let s of starts) {
 						for (let y = s.y; y < Underground.sizeX; y += 3) { // these two are swapped so that y goes vertical and x goes horizontal
-							for (let x = s.x; x < UG.getSizeY(); x += 3) {
-								if (UG.energy < this._minEnergy) {
+							for (let x = s.x; x < AU.getSizeY(); x += 3) {
+								if (AU.energy < this._minEnergy) {
 									return
 								}
 								this.smartMine(x, y)
@@ -33,8 +33,8 @@ if (!Autopoke) Autopoke = {};
 						}
 					}
 					// mine random spots if the grid is done but the layer isn't
-					while (UG.energy >= this._minEnergy) {
-						const x = GameConstants.randomIntBetween(0, UG.getSizeY() - 1);
+					while (AU.energy >= this._minEnergy) {
+						const x = GameConstants.randomIntBetween(0, AU.getSizeY() - 1);
 						const y = GameConstants.randomIntBetween(0, Underground.sizeX - 1);
 						this.smartMine(x, y);
 					}
@@ -44,7 +44,7 @@ if (!Autopoke) Autopoke = {};
 
 		// for some reason X is down and Y is right
 		mine: function (x, y) {
-			while (Mine.grid[x][y]() > 0 && App.game.underground.energy >= Underground.CHISEL_ENERGY) {
+			while (Mine.grid[x][y]() > 0 && AU.energy >= Underground.CHISEL_ENERGY) {
 				Mine.chisel(x, y);
 			}
 		},

@@ -3,25 +3,27 @@
 if (!Autopoke) Autopoke = {};
 
 (function () {
+	let AF = App.game.farming;
+
 	Autopoke.farming = {
 
 		interval: [],
 
 		intervalFunction: function () {
 			return setInterval(() => {
-				App.game.farming.harvestAll();
-				App.game.farming.plantAll(this.berry.type);
+				AF.harvestAll();
+				AF.plantAll(this.berry.type);
 			}, this.berry.growthTime[3] + this.intervalTime);
 		},
 
-		_berry: App.game.farming.berryData[BerryType.Cheri],
+		_berry: AF.berryData[BerryType.Cheri],
 
 		get berry() {
 			return this._berry;
 		},
 		set berry(val) {
 			if (BerryType[val] !== undefined) {
-				this._berry = App.game.farming.berryData[BerryType[val]];
+				this._berry = AF.berryData[BerryType[val]];
 				this.Start();
 			} else {
 				console.log("No berry with that name (Case sensitive)");

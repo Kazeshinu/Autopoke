@@ -3,40 +3,40 @@
 if (!Autopoke) Autopoke = {};
 
 (function () {
+  let AB = App.game.breeding;
+
   Autopoke.breeding = {
     interval: [],
 
     intervalFunction: function () {
       return setInterval(() => {
-        if (App.game.breeding.queueList().length === 0) {
-          App.game.breeding.hatchPokemonEgg(0);
-          App.game.breeding.hatchPokemonEgg(1);
-          App.game.breeding.hatchPokemonEgg(2);
-          App.game.breeding.hatchPokemonEgg(3);
+        if (AB.queueList().length === 0) {
+          AB.hatchPokemonEgg(0);
+          AB.hatchPokemonEgg(1);
+          AB.hatchPokemonEgg(2);
+          AB.hatchPokemonEgg(3);
         }
         if (
-          App.game.breeding.queueList().length <
-            Math.min(this._maxQueueSlots, App.game.breeding.queueSlots()) ||
-          App.game.breeding.hasFreeEggSlot()
+          AB.queueList().length <
+            Math.min(this._maxQueueSlots, AB.queueSlots()) ||
+          AB.hasFreeEggSlot()
         ) {
+          let fossil = this.helpFunctions.nextFossil();
           if (
             this._priorityEgg &&
-            (this.helpFunctions.nextEgg() || this.helpFunctions.nextFossil())
+            (this.helpFunctions.nextEgg() ||
+              (fossil &&
+                !AB.eggList.find(
+                  (f) => f().pokemon === GameConstants.FossilToPokemon[fossil]
+                )))
           ) {
-            if (App.game.breeding.hasFreeEggSlot()) {
+            if (AB.hasFreeEggSlot()) {
               if (this.helpFunctions.nextEgg()) {
                 ItemList[this.helpFunctions.nextEgg(this._eggCaught)].use();
-              } else if (this.helpFunctions.nextFossil()) {
-                let fossil = this.helpFunctions.nextFossil();
-                if (
-                  !App.game.breeding.eggList.find(
-                    (f) => f().pokemon == GameConstants.FossilToPokemon[fossil]
-                  )
-                ) {
-                  Underground.sellMineItem(
-                    player.mineInventory().find((x) => x.name === fossil).id
-                  );
-                }
+              } else if (fossil) {
+                Underground.sellMineItem(
+                  player.mineInventory().find((x) => x.name === fossil).id
+                );
               }
             }
           } else {
@@ -44,7 +44,7 @@ if (!Autopoke) Autopoke = {};
               (partyPokemon) => BreedingController.visible(partyPokemon)()
             )[0];
             if (nextPokemon) {
-              App.game.breeding.addPokemonToHatchery(nextPokemon);
+              AB.addPokemonToHatchery(nextPokemon);
             }
           }
         }

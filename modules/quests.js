@@ -3,26 +3,28 @@
 if (!Autopoke) Autopoke = {};
 
 (function () {
+	let AQ = App.game.quests;
+
 	Autopoke.quests = {
 		interval: [],
 		intervalFunction: function () {
 			return setInterval(() => {
 				//Try to claim Quests
-				App.game.quests
+				AQ
 					.currentQuests()
 					.filter((quest) => quest.isCompleted())
-					.forEach((quest) => App.game.quests.claimQuest(quest.index));
+					.forEach((quest) => AQ.claimQuest(quest.index));
 
 				App.game.pokeballs.alreadyCaughtSelection = this._pokeballs.alreadyCaughtSelection;
 				App.game.pokeballs.alreadyCaughtShinySelection = this._pokeballs.alreadyCaughtShinySelection;
 				let failsafe = 0; //fixes infinite loop while gaining new questslot
 				//If Questslots Start new quests
-				while (App.game.quests.canStartNewQuest() && failsafe < 10) {
-					let nextQuest = App.game.quests
+				while (AQ.canStartNewQuest() && failsafe < 10) {
+					let nextQuest = AQ
 						.questList()
 						.find((quest) => !quest.isCompleted() && !quest.inProgress());
 					if (nextQuest) {
-						App.game.quests.beginQuest(nextQuest.index);
+						AQ.beginQuest(nextQuest.index);
 					}
 					failsafe++;
 				}
@@ -33,8 +35,8 @@ if (!Autopoke) Autopoke = {};
 				let shardQuest = false;
 				let useBallQuest = false;
 				let highestPrio = 0;
-				for (let i = 0; i < App.game.quests.currentQuests().length; i++) {
-					let index = this._questPriorityList.indexOf(App.game.quests.currentQuests()[i].constructor.name);
+				for (let i = 0; i < AQ.currentQuests().length; i++) {
+					let index = this._questPriorityList.indexOf(AQ.currentQuests()[i].constructor.name);
 					highestPrio = index > highestPrio ? index : highestPrio;
 					if (this._currentQuest instanceof GainShardsQuest) {
 						shardQuest = true;
@@ -53,8 +55,8 @@ if (!Autopoke) Autopoke = {};
 				let route;
 				let itemName = "";
 				let setBalls = false;
-				for (let i = 0; i < App.game.quests.currentQuests().length; i++) {
-					this._currentQuest = App.game.quests.currentQuests()[i];
+				for (let i = 0; i < AQ.currentQuests().length; i++) {
+					this._currentQuest = AQ.currentQuests()[i];
 
 					switch (this._currentQuest.constructor) {
 						case BuyPokeballsQuest:
