@@ -1,10 +1,10 @@
 //Auto Gym
 
-if (!Autopoke) var Autopoke = {};
+if (!Autopoke) Autopoke = {};
 
 (function () {
 
-	const AutoGym = {
+	Autopoke.gym = {
 
 		interval: [],
 
@@ -30,7 +30,6 @@ if (!Autopoke) var Autopoke = {};
 			moneyReward: 0,
 			pokemons: [],
 			requirements: [],
-			rewardFunction: () => {},
 			town: "DummyTown"
 		},
 		_runs: 1,
@@ -69,8 +68,7 @@ if (!Autopoke) var Autopoke = {};
 			this._runs = 1
 		}
 
-	}
-	Autopoke.gym = AutoGym;
+	};
 	Autopoke.gym._gym = Autopoke.gym._dummyGym;
 	GymRunner.gymObservable(Autopoke.gym._dummyGym);
 	GymRunner.gymObservable.subscribe(function (newValue) {

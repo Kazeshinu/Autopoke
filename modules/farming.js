@@ -1,9 +1,9 @@
 // Auto Farming
 
-if (!Autopoke) var Autopoke = {};
+if (!Autopoke) Autopoke = {};
 
 (function () {
-	const AutoFarming = {
+	Autopoke.farming = {
 
 		interval: [],
 
@@ -50,6 +50,5 @@ if (!Autopoke) var Autopoke = {};
 		Stop: function () {
 			clearInterval(this.interval.pop());
 		}
-	}
-	Autopoke.farming = AutoFarming;
+	};
 })();

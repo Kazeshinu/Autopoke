@@ -1,10 +1,10 @@
 //Auto Underground
 
-if (!Autopoke) var Autopoke = {};
+if (!Autopoke) Autopoke = {};
 
 (function () {
 
-	let AutoUnderground = {
+	Autopoke.underground = {
 
 		interval: [],
 		intervalFunction: function () {
@@ -111,5 +111,4 @@ if (!Autopoke) var Autopoke = {};
 			clearInterval(this.interval.pop());
 		}
 	};
-	Autopoke.underground = AutoUnderground;
 })();

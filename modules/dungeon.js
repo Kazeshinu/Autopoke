@@ -1,10 +1,10 @@
 //Auto Dungeon
 
-if (!Autopoke) var Autopoke = {};
+if (!Autopoke) Autopoke = {};
 
 (function () {
 
-	const AutoDungeon = {
+	Autopoke.dungeon = {
 
 		interval: [],
 
@@ -127,8 +127,7 @@ if (!Autopoke) var Autopoke = {};
 			this._runs = 1
 		}
 
-	}
-	Autopoke.dungeon = AutoDungeon;
+	};
 	Autopoke.dungeon._dungeon = Autopoke.dungeon._dummyDungeon;
 	DungeonRunner.dungeonObservable = ko.observable(Autopoke.dungeon._dummyDungeon);
 	DungeonRunner.initializeDungeon = (function () {

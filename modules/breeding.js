@@ -1,10 +1,10 @@
 //  Auto Breeding
 
-if (!Autopoke) var Autopoke = {};
+if (!Autopoke) Autopoke = {};
 
 (function () {
 
-	const AutoBreeding = {
+	Autopoke.breeding = {
 
 		interval: [],
 
@@ -17,13 +17,12 @@ if (!Autopoke) var Autopoke = {};
 					App.game.breeding.hatchPokemonEgg(3);
 
 				}
-				if ((App.game.breeding.queueList().length < Math.min(this._maxQueueSlots,App.game.breeding.queueSlots())) || App.game.breeding.hasFreeEggSlot()) {
+				if ((App.game.breeding.queueList().length < Math.min(this._maxQueueSlots, App.game.breeding.queueSlots())) || App.game.breeding.hasFreeEggSlot()) {
 					if (this._priorityEgg && this.helpFunctions.hasEgg()) {
 						if (App.game.breeding.hasFreeEggSlot()) {
 							ItemList[this.helpFunctions.nextEgg()].use();
 						}
-					}
-					else {
+					} else {
 						let nextPokemon = App.game.party.caughtPokemon.filter(
 							partyPokemon => BreedingController.visible(partyPokemon)()
 						)[0];
@@ -49,7 +48,7 @@ if (!Autopoke) var Autopoke = {};
 				console.log("Not a whole number");
 			}
 		},
-		_maxQueueSlots:2,
+		_maxQueueSlots: 2,
 		get maxQueueSlots() {
 			return this._maxQueueSlots;
 		},
@@ -61,7 +60,7 @@ if (!Autopoke) var Autopoke = {};
 				console.log("Not a whole number");
 			}
 		},
-		_priorityEgg:true,
+		_priorityEgg: true,
 		get prioritiseEggs() {
 			return this._priorityEgg;
 		},
@@ -76,14 +75,12 @@ if (!Autopoke) var Autopoke = {};
 		helpFunctions: {
 			hasEgg: function () {
 				let allowedEggs = GameHelper.enumStrings(GameConstants.EggItemType);
-				return 0<allowedEggs.filter(X=>player.itemList[X]()>0).length;
+				return 0 < allowedEggs.filter(X => player.itemList[X]() > 0).length;
 			},
 			nextEgg: function () {
 				let allowedEggs = GameHelper.enumStrings(GameConstants.EggItemType);
-				return allowedEggs.find(X=>player.itemList[X]()>0);
+				return allowedEggs.find(X => player.itemList[X]() > 0);
 			}
-
-
 
 
 		},
@@ -97,6 +94,5 @@ if (!Autopoke) var Autopoke = {};
 		Stop: function () {
 			clearInterval(this.interval.pop());
 		}
-	}
-	Autopoke.breeding = AutoBreeding;
+	};
 })();

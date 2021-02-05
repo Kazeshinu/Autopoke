@@ -1,10 +1,10 @@
 // Auto Clicking
 
-if (!Autopoke) var Autopoke = {};
+if (!Autopoke) Autopoke = {};
 
 (function () {
 
-	const AutoClicking = {
+	Autopoke.clicking = {
 
 		interval: [],
 
@@ -56,6 +56,5 @@ if (!Autopoke) var Autopoke = {};
 			clearInterval(this.interval.pop());
 		}
 
-	}
-	Autopoke.clicking = AutoClicking;
+	};
 })();
