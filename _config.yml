@@ -1,5 +1,9 @@
 title: Kazeshinu's Autopoké
-description: A set of automation scripts for pokeclicker
+description: > # this means to ignore newlines until "show_excerpts:"
+  Autopoke is an set of automation scripts for pokeclicker.
+  Including autoclicker, autobreeding and other features
+
+show_excerpts: false
 
 author: Kazeshinu
 
@@ -19,4 +23,4 @@ plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
 
-theme: jekyll-theme-hacker
+theme: minima
