@@ -22,11 +22,6 @@ google_analytics: "G-23DDEL7S9R"
 minima:
   skin: dark
 
-header_pages:
-  - /modules/quests.js
-  - /modules/breeding.js
-
-
 plugins:
   - jekyll-paginate
   - jekyll-seo-tag
