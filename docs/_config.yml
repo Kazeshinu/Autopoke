@@ -21,6 +21,15 @@ google_analytics: "G-23DDEL7S9R"
 
 minima:
   skin: dark
+  
+header_pages:
+  - index.md
+  - breeding.md
+  - clicking.md
+  - dungeon.md
+  - farming.md
+  - gym.md
+  - underground.md
 
 plugins:
   - jekyll-paginate
