@@ -7,9 +7,12 @@ description: > # this means to ignore newlines until "show_excerpts:"
 
 show_excerpts: false
 
-author: Kazeshinu
+author:
+  name: Kazeshinu
 
-github_username: Kazeshinu
+minima:
+  social_links:
+    github: Kazeshinu
 
 url-pretty: "https://github.com/Kazeshinu/Autopoke"
 
