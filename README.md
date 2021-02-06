@@ -1,4 +1,4 @@
-
+# Autopoke
 ------------------
 
 Autopoke is a hobby automation script collection for [![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/pokeclicker/pokeclicker/master?label=Pokeclicker.com)](https://www.pokeclicker.com/)<br/>
@@ -21,7 +21,7 @@ Also works on the Desktop version CTRL+SHIFT+I to open Console
   ```
   
 Desktop version available at GitHub: [![GitHub release (latest by date)](https://img.shields.io/github/v/release/RedSparr0w/Pokeclicker-desktop?label=Pokeclicker-desktop&logo=Github)](https://github.com/RedSparr0w/Pokeclicker-desktop/releases)
-## Modules
+# Modules
 
 ### breeding
 ------------------
@@ -85,7 +85,7 @@ Functions shared by all modules\
 `intervalFunction` this gets run on start don't edit if you don't know what you are doing.
 
 
-## How to use
+# How to use
 ------------------
 
 This needs to be run in console.\
@@ -96,7 +96,7 @@ or individual modules: https://kazeshinu.github.io/Autopoke/modules/{MODULE_NAME
 
 Access your modules with Autopoke.module i.e `Autopoke.dungeon.runs = 100` `Autopoke.farming.Stop()`  
 
-Support / Social
+# Support / Social
 ------------------
 
 [![Discord](https://img.shields.io/discord/437797104786604034?color=%237289DA&label=Legends%20of%20IdleOn&logo=Discord)](https://discord.gg/idleon) Created in Legends of Idleon Discord #off-topic-chat 
