@@ -1,0 +1,34 @@
+theme: minima
+
+title: Kazeshinu's Autopoké
+description: > # this means to ignore newlines until "show_excerpts:"
+  Autopoke is an set of automation scripts for pokeclicker.
+  Including autoclicker, autobreeding and other features
+
+show_excerpts: false
+
+author: Kazeshinu
+
+social-network-links:
+  github: Kazeshinu
+
+url-pretty: "https://github.com/Kazeshinu/Autopoke"
+
+keywords: "pokeclicker,script,helper,autoclicker,automatic,breeding,hatching,dungeon"
+
+gtag: "G-23DDEL7S9R"
+google_analytics: "G-23DDEL7S9R"
+
+minima:
+  skin: dark
+
+header_pages:
+  - /modules/quests.js
+  - /modules/breeding.js
+
+
+plugins:
+  - jekyll-paginate
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
