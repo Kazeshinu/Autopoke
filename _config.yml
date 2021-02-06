@@ -17,6 +17,9 @@ keywords: "pokeclicker,script,helper,autoclicker,automatic,breeding,hatching,dun
 gtag: "G-23DDEL7S9R"
 google_analytics: "G-23DDEL7S9R"
 
+minima:
+  skin: solarized-dark
+
 
 plugins:
   - jekyll-paginate
