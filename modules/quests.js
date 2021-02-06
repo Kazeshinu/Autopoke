@@ -1,6 +1,6 @@
 //Auto Quests
 
-if (!Autopoke) Autopoke = {};
+if (!Autopoke) var Autopoke = {};
 
 (function () {
 	let AQ = App.game.quests;
@@ -459,7 +459,7 @@ if (!Autopoke) Autopoke = {};
 				let average = (ls) => ls.reduce((a, b) => a + b, 0) / ls.length
 				let availableRoutes = Routes.regionRoutes.filter(r => this.accessToRoute(r.number, r.region))
 				let availableGyms = Object.values(gymList).filter(g => Gym.isUnlocked(g) && this.betterAccessToTown(g.town))
-				const bonus = App.game.wallet.multiplier.getBonus('money', true)
+				const bonus = App.game.wallet.multiplier.getBonus('money')
 				let routeMoney = availableRoutes.map(r => {
 					let arr = Array(100).fill(0).map(() => PokemonFactory.routeMoney(r.number, r.region))
 					return [[r.region, r.number], bonus * average(arr)]

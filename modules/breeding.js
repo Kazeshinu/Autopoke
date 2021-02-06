@@ -1,6 +1,6 @@
 //  Auto Breeding
 
-if (!Autopoke) Autopoke = {};
+if (!Autopoke) var Autopoke = {};
 
 (function () {
   let AB = App.game.breeding;

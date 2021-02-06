@@ -1,6 +1,6 @@
 //Auto Dungeon
 
-if (!Autopoke) Autopoke = {};
+if (!Autopoke) var Autopoke = {};
 
 (function () {
 

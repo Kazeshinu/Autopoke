@@ -1,6 +1,6 @@
 //Auto Gym
 
-if (!Autopoke) Autopoke = {};
+if (!Autopoke) var Autopoke = {};
 
 (function () {
 

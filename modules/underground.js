@@ -1,6 +1,6 @@
 //Auto Underground
 
-if (!Autopoke) Autopoke = {};
+if (!Autopoke) var Autopoke = {};
 
 (function () {
 	let AU = App.game.underground;

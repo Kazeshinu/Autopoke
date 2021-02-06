@@ -1,6 +1,6 @@
 // Auto Clicking
 
-if (!Autopoke) Autopoke = {};
+if (!Autopoke) var Autopoke = {};
 
 (function () {
 

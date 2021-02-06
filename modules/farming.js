@@ -1,6 +1,6 @@
 // Auto Farming
 
-if (!Autopoke) Autopoke = {};
+if (!Autopoke) var Autopoke = {};
 
 (function () {
 	let AF = App.game.farming;
