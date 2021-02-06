@@ -1,3 +1,5 @@
+theme: minima
+
 title: Kazeshinu's Autopoké
 description: > # this means to ignore newlines until "show_excerpts:"
   Autopoke is an set of automation scripts for pokeclicker.
@@ -18,7 +20,7 @@ gtag: "G-23DDEL7S9R"
 google_analytics: "G-23DDEL7S9R"
 
 minima:
-  skin: solarized-dark
+  skin: dark
 
 
 plugins:
@@ -26,4 +28,4 @@ plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
 
-theme: minima
+
