@@ -10,10 +10,6 @@ show_excerpts: false
 author:
   name: Kazeshinu
 
-minima:
-  social_links:
-    github: Kazeshinu
-
 url-pretty: "https://github.com/Kazeshinu/Autopoke"
 
 keywords: "pokeclicker,script,helper,autoclicker,automatic,breeding,hatching,dungeon"
@@ -22,6 +18,8 @@ google_analytics: "G-W9TN9CGVMN"
 
 minima:
   skin: solarized-dark
+  social_links:
+    github: Kazeshinu
   
 header_pages:
   - index.md
