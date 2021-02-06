@@ -1,4 +1,4 @@
-theme: minima
+remote_theme: jekyll/minima
 
 title: Kazeshinu's Autopoké
 description: > # this means to ignore newlines until "show_excerpts:"
@@ -33,4 +33,5 @@ plugins:
   - jekyll-paginate
   - jekyll-seo-tag
   - jekyll-sitemap
+  - jekyll-remote-theme
 
