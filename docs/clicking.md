@@ -1,5 +1,5 @@
 ---
 layout: page
-title: Clicking
+title: Clicking Module
 permalink: /clicking/
 ---
