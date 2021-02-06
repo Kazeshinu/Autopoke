@@ -1,7 +1,20 @@
 title: Kazeshinu's Autopoké
 description: A set of automation scripts for pokeclicker
 
+author: Kazeshinu
+
+social-network-links:
+  github: Kazeshinu
+
+url-pretty: "https://github.com/Kazeshinu/Autopoke"
+
+keywords: "pokeclicker,script,helper,autoclicker,automatic,breeding,hatching,dungeon"
+
+gtag: "G-23DDEL7S9R"
+
+
 plugins:
+  - jekyll-paginate
   - jekyll-seo-tag
   - jekyll-sitemap
 
