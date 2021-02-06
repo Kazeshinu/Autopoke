@@ -1,1 +1,8 @@
+title: Kazeshinu's Autopoké
+description: A set of automation scripts for pokeclicker
+
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
 theme: jekyll-theme-hacker
