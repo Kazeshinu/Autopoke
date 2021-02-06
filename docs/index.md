@@ -31,3 +31,21 @@ Also works on the Desktop version CTRL+SHIFT+I to open Console
   ```
   
 Desktop version available at GitHub: [![GitHub release (latest by date)](https://img.shields.io/github/v/release/RedSparr0w/Pokeclicker-desktop?label=Pokeclicker-desktop&logo=Github)](https://github.com/RedSparr0w/Pokeclicker-desktop/releases)
+
+## How to use
+------------------
+
+This needs to be run in console.\
+For the Desktop version open console with CTRL+SHIFT+I
+
+Run this in console: https://kazeshinu.github.io/Autopoke/Autopoke.js to load and start all modules
+or individual modules: https://kazeshinu.github.io/Autopoke/modules/{MODULE_NAME_LOWERCASE}.js  
+
+Access your modules with Autopoke.module i.e `Autopoke.dungeon.runs = 100` `Autopoke.farming.Stop()`  
+
+## Support / Social
+------------------
+
+[![Discord](https://img.shields.io/discord/437797104786604034?color=%237289DA&label=Legends%20of%20IdleOn&logo=Discord)](https://discord.gg/idleon) Created in Legends of Idleon Discord #off-topic-chat 
+
+[![GitHub issues](https://img.shields.io/github/issues/kazeshinu/Autopoke?logo=Github)](https://github.com/Kazeshinu/Autopoke/issues/new) Open a ticket on GitHub

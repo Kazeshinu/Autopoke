@@ -1,5 +1,6 @@
 ---
 layout: page
-title: Quest Module
+title: Quests (DEV)
 permalink: /quests/
 ---
+
