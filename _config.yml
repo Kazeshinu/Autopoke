@@ -23,8 +23,8 @@ minima:
   skin: dark
 
 header_pages:
-  - about.md
-  - portfolio.md
+  - /modules/quests.js
+  - /modules/breeding.js
 
 
 plugins:
