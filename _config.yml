@@ -18,7 +18,7 @@ keywords: "pokeclicker,script,helper,autoclicker,automatic,breeding,hatching,dun
 google_analytics: "G-W9TN9CGVMN"
 
 minima:
-  skin: dark
+  skin: solarized-dark
   
 header_pages:
   - index.md
