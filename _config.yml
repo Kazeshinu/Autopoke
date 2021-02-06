@@ -22,13 +22,12 @@ minima:
   
 header_pages:
   - index.md
-  - breeding.md
-  - clicking.md
-  - dungeon.md
-  - farming.md
-  - gym.md
-  - underground.md
-  - GithubPages/newModule.md
+  - infopages/breeding.md
+  - infopages/clicking.md
+  - infopages/dungeon.md
+  - infopages/farming.md
+  - infopages/gym.md
+  - infopages/underground.md
 
 plugins:
   - jekyll-paginate
