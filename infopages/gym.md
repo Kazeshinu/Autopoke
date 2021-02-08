@@ -8,4 +8,4 @@ Ability to repeat gyms # amount of times
 
 ##### Functions
 -----------------
-`Autopoke.gym.runs = #` sets next amount of gym runs to #  
+`Autopoke.gym.runs = 1` sets next amount of gym runs to ###  
