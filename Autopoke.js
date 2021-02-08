@@ -1,4 +1,4 @@
-var AutopokeVersion = "0.5";
+var AutopokeVersion = "0.6";
 
 var AutopokeBranch = "main"; //  main || dev
 
@@ -25,6 +25,7 @@ var modules = [
 	"farming",
 	"underground",
 	"gym",
+	"quests",
 ];
 for (let i = 0, len = modules.length; i < len; i++) {
 	document.head.appendChild(document.createElement("script")).src = `${
