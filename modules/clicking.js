@@ -34,7 +34,7 @@ if (!Autopoke) var Autopoke = {};
 				console.log("That is not a valid number");
 			}
 		},
-		_intervalTime: 50,
+		_intervalTime: 40,
 		get intervalTime() {
 			return this._intervalTime;
 		},
