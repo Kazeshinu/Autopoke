@@ -29,6 +29,7 @@ header_pages:
   - infopages/farming.md
   - infopages/gym.md
   - infopages/underground.md
+  - infopages/quests.md
 
 plugins:
   - jekyll-paginate
