@@ -586,8 +586,40 @@ if (!Autopoke) var Autopoke = {};
     _mostEfficientPlace: [],
     _highestPrio: 0,
     _autoMove: true,
+    get autoMove() {
+      return this._autoMove;
+    },
+    set autoMove(val) {
+      if (val === true || val === false) {
+        this._autoMove = val;
+      } else {
+        console.log("Not true or false");
+      }
+    },
     _captureShinyBall: 2,
+    get shinyCaptureBall() {
+      return GameConstants.Pokeball[this._captureShinyBall];
+    },
+    set shinyCaptureBall(val) {
+      let ball = GameHelper.enumStrings(GameConstants.Pokeball).find(X => X===val);
+      if (val !== undefined) {
+        this._captureShinyBall = GameConstants.Pokeball[val];
+      } else {
+        console.log("Not a ball: "+ GameHelper.enumStrings(GameConstants.Pokeball));
+      }
+    },
     _captureBall: 0,
+    get captureBall() {
+      return GameConstants.Pokeball[this._captureBall];
+    },
+    set captureBall(val) {
+      let ball = GameHelper.enumStrings(GameConstants.Pokeball).find(X => X===val);
+      if (val !== undefined) {
+        this._captureBall = GameConstants.Pokeball[val];
+      } else {
+        console.log("Not a ball: "+ GameHelper.enumStrings(GameConstants.Pokeball));
+      }
+    },
     _pokeballs: {
       alreadyCaughtShinySelection:
         App.game.pokeballs.alreadyCaughtShinySelection,
