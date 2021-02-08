@@ -9,4 +9,4 @@ Automation of dungeon by moving and repeating with the posibility to collect che
 ##### Functions
 -----------------
 `Autopoke.dungeon.runs = 1` sets next amount of dungeon runs to ###\
-`Autopoke.dungeon.openChests = true` opens chests in dungeons `true || false`  
+`Autopoke.dungeon.openChests = false` opens chests in dungeons `true || false`  
