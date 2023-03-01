@@ -60,7 +60,7 @@ if (!Autopoke) var Autopoke = {};
 			}
 
 			if (Mine.rewardNumbers.includes(reward.value)) {
-				let space = Array.from(UndergroundItem.list.find(v => v.id === reward.value).space)
+				let space = Array.from(UndergroundItems.list.find(v => v.id === reward.value).space)
 				if (space[0][0].rotations !== reward.rotations) {
 					space = rotate(space, [0, 1, 3, 2].indexOf(reward.rotations))
 				}
