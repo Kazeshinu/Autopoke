@@ -1,6 +1,6 @@
 var AutopokeVersion = "0.6";
 
-var AutopokeBranch = "main"; //  main || dev
+var AutopokeBranch = "dev"; //  main || dev
 
 var lastCompatibleVersion = "0.7.5";
 if (versionCompare(App.game.update.version, lastCompatibleVersion) === 1) {
