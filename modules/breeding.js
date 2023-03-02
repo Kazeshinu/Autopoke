@@ -3,8 +3,11 @@
 if (!Autopoke) var Autopoke = {};
 
 
+
+
 	//Create Breeding UI
 	(function () {
+    if(Autopoke.breeding) return;
 		let breedContainer=document.getElementById("breedingDisplay");
 		let elem = document.createElement("div");
 		elem.id="kazeBreedUI";
