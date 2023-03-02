@@ -5,6 +5,7 @@ if (!Autopoke) var Autopoke = {};
 
 	//Create Clicking UI
 	(function () {
+		if(Autopoke.clicking) return;
 		let battleContainer=document.getElementById("battleContainer");
 		let elem = document.createElement("div");
 		elem.id="kazeClickingUI";
