@@ -21,11 +21,8 @@ if (AutopokeBranch === "main") base = "https://kazeshinu.github.io/Autopoke/";
 var modules = [
 	"breeding",
 	"clicking",
-	"dungeon",
 	"farming",
 	"underground",
-	"gym",
-	"quests",
 ];
 for (let i = 0, len = modules.length; i < len; i++) {
 	document.head.appendChild(document.createElement("script")).src = `${

@@ -34,8 +34,8 @@ if (!Autopoke) var Autopoke = {};
 					}
 					// mine random spots if the grid is done but the layer isn't
 					while (AU.energy >= this._minEnergy) {
-						const x = GameConstants.randomIntBetween(0, AU.getSizeY() - 1);
-						const y = GameConstants.randomIntBetween(0, Underground.sizeX - 1);
+						const x = Rand.intBetween(0, AU.getSizeY() - 1);
+						const y = Rand.intBetween(0, Underground.sizeX - 1);
 						this.smartMine(x, y);
 					}
 				}).bind(this)()
@@ -44,11 +44,16 @@ if (!Autopoke) var Autopoke = {};
 
 		// for some reason X is down and Y is right
 		mine: function (x, y) {
+			if(Mine.grid[x]){
+			if(Mine.grid[x][y]){
 			while (Mine.grid[x][y]() > 0 && AU.energy >= Underground.CHISEL_ENERGY) {
 				Mine.chisel(x, y);
 			}
+		}
+		}
 		},
 		smartMine: function (x, y) {
+			if(Mine.loadingNewLayer) return;
 			this.mine(x, y)
 			const reward = Mine.rewardGrid[x][y];
 
@@ -60,7 +65,7 @@ if (!Autopoke) var Autopoke = {};
 			}
 
 			if (Mine.rewardNumbers.includes(reward.value)) {
-				let space = Array.from(UndergroundItem.list.find(v => v.id === reward.value).space)
+				let space = Array.from(UndergroundItems.list.find(v => v.id === reward.value).space)
 				if (space[0][0].rotations !== reward.rotations) {
 					space = rotate(space, [0, 1, 3, 2].indexOf(reward.rotations))
 				}
@@ -72,6 +77,8 @@ if (!Autopoke) var Autopoke = {};
 						}
 					}
 				}
+				
+
 				for (let j = 0; j < space.length; j++) {
 					for (let i = 0; i < space[0].length; i++) {
 						if (space[j][i].value !== 0) {
