@@ -2,11 +2,37 @@
 
 if (!Autopoke) var Autopoke = {};
 
+
+
+
+	//Create Breeding UI
+	(function () {
+    if(Autopoke.breeding) return;
+		let breedContainer=document.getElementById("breedingDisplay");
+		let elem = document.createElement("div");
+		elem.id="kazeBreedUI";
+		elem.innerHTML=`<button id="kazeBreedUIButton" class="btn btn-sm btn-danger " style="
+    position: absolute;
+    top: 0px;
+    height: 41px;
+    left: 0px;
+    font-size: 8pt;
+    width: 60px;">
+    Auto [<span style="
+    line-height: 0;
+">OFF</span>]</button>
+		`;
+		breedContainer.insertBefore(elem,breedContainer.firstChild);
+
+
+
+	})();
+
 (function () {
   let AB = App.game.breeding;
 
   Autopoke.breeding = {
-    interval: [],
+    interval: null,
 
     intervalFunction: function () {
       return setInterval(() => {
@@ -119,13 +145,40 @@ if (!Autopoke) var Autopoke = {};
       },
     },
 
-    Start: function () {
-      clearInterval(this.interval.pop());
-      this.interval.push(this.intervalFunction());
-    },
-
-    Stop: function () {
-      clearInterval(this.interval.pop());
-    },
+		isRunning: false,
+		Start: function () {
+			if(this.interval) 
+				clearInterval(this.interval);
+		    this.isRunning=true;
+			let button = document.getElementById('kazeBreedUIButton');
+			button.classList.remove("btn-danger");
+			button.classList.add("btn-success");
+			button.children[0].innerHTML="ON";
+			this.interval = this.intervalFunction();
+		},
+		Stop: function () {
+			if(this.interval) {
+			clearInterval(this.interval);
+			this.isRunning=false;
+			this.interval=null;
+			let button = document.getElementById('kazeBreedUIButton');
+			button.classList.remove("btn-success");
+			button.classList.add("btn-danger");
+			button.children[0].innerHTML="OFF";
+			}
+		},
   };
 })();
+let button = document.getElementById('kazeBreedUIButton');
+
+function handleClick() {
+  if(Autopoke.breeding.isRunning) {
+
+	Autopoke.breeding.Stop();
+  }
+  else {
+	Autopoke.breeding.Start();
+  }
+}
+
+button.addEventListener('click', handleClick);

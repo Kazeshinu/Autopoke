@@ -126,7 +126,7 @@ if (!Autopoke) var Autopoke = {};
                 }
                 MapHelper.moveToTown(TownList[this._currentQuest.gymTown].name);
                 player.region = player.town().region;
-                GymRunner.startGym(gymList[this._currentQuest.gymTown]);
+                GymRunner.startGym(GymList[this._currentQuest.gymTown]);
               }
               break;
             case UsePokeballQuest:
@@ -226,12 +226,12 @@ if (!Autopoke) var Autopoke = {};
                         (this.helpFunctions
                           .gymShardsRateForType(this._currentQuest.type)
                           .find((X) => X[0] === this._mostEfficientPlace[0])[1] *
-                          gymList[this._mostEfficientPlace[0]].pokemons.length)
+                          GymList[this._mostEfficientPlace[0]].pokemons.length)
                     );
                   }
                   MapHelper.moveToTown(this._mostEfficientPlace[0]);
                   player.region = player.town().region;
-                  GymRunner.startGym(gymList[this._mostEfficientPlace[0]]);
+                  GymRunner.startGym(GymList[this._mostEfficientPlace[0]]);
                 }
               } else {
                 let route = this._mostEfficientPlace[0];
@@ -414,12 +414,13 @@ if (!Autopoke) var Autopoke = {};
         );
       },
       betterAccessToTown: function (townName) {
-        if (townName === "Poké Mart") {
-          return App.game.statistics.gymsDefeated[
-            GameConstants.getGymIndex("Champion Lance")
-          ]();
+        let town = TownList[townName];
+        if(!town) { //might be gym
+          town = GymList[townName];
+          if(!town) return false;
+          if(!town.isUnlocked()) return false;
+          town = (town.parent!==undefined?town.parent:TownList[town.town]);
         }
-        const town = TownList[townName];
         return this.latestDockUnlocked()
           ? town.isUnlocked() && town.region <= player.highestRegion()
           : town.isUnlocked() && town.region === player.highestRegion();
@@ -459,8 +460,8 @@ if (!Autopoke) var Autopoke = {};
         return found || 0;
       },
       gymShardsRateForType: function (type) {
-        return Object.values(gymList)
-          .filter((g) => Gym.isUnlocked(g) && this.betterAccessToTown(g.town))
+        return Object.values(GymList)
+          .filter((g) => g.isUnlocked() && this.betterAccessToTown(g.town))
           .map((g) => [
             g.town,
             type === -1
@@ -469,7 +470,7 @@ if (!Autopoke) var Autopoke = {};
                   .map((p) => PokemonHelper.getPokemonByName(p.name))
                   .filter((p) => p.type1 === type || p.type2 === type).length /
                   g.pokemons.length) *
-                GameConstants.GYM_SHARDS,
+                GameConstants.GYM_GEMS,
           ])
           .filter((r) => r[1] > 0);
       },
@@ -517,14 +518,14 @@ if (!Autopoke) var Autopoke = {};
         let average = (ls) => ls.reduce((a, b) => a + b, 0) / ls.length;
         return gyms.map((r) => {
           let [gym, rate] = r;
-          let hits = gymList[gym].pokemons.map((p) => {
+          let hits = GymList[gym].pokemons.map((p) => {
             let poke = PokemonHelper.getPokemonByName(p.name);
             return Math.ceil(
               p.maxHealth /
                 App.game.party.calculatePokemonAttack(poke.type1, poke.type2)
             );
           });
-          let clicks = gymList[gym].pokemons.map((p) =>
+          let clicks = GymList[gym].pokemons.map((p) =>
             Math.ceil(p.maxHealth / App.game.party.calculateClickAttack())
           );
           return [gym, rate / Math.min(average(hits), average(clicks) / 20)];
@@ -548,8 +549,8 @@ if (!Autopoke) var Autopoke = {};
         let availableRoutes = Routes.regionRoutes.filter((r) =>
           this.accessToRoute(r.number, r.region)
         );
-        let availableGyms = Object.values(gymList).filter(
-          (g) => Gym.isUnlocked(g) && this.betterAccessToTown(g.town)
+        let availableGyms = Object.values(GymList).filter(
+          (g) => g.isUnlocked() && this.betterAccessToTown(g.town)
         );
         const bonus = App.game.wallet.multiplier.getBonus("money");
         let routeMoney = availableRoutes.map((r) => {

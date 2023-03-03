@@ -1,6 +1,6 @@
 var AutopokeVersion = "0.6.1";
 
-var AutopokeBranch = "main"; //  main || dev
+var AutopokeBranch = "dev"; //  main || dev
 
 var lastCompatibleVersion = "0.7.9";
 if (versionCompare(App.game.update.version, lastCompatibleVersion) === 1) {
@@ -21,11 +21,8 @@ if (AutopokeBranch === "main") base = "https://kazeshinu.github.io/Autopoke/";
 var modules = [
 	"breeding",
 	"clicking",
-	"dungeon",
 	"farming",
 	"underground",
-	"gym",
-	"quests",
 ];
 for (let i = 0, len = modules.length; i < len; i++) {
 	document.head.appendChild(document.createElement("script")).src = `${
