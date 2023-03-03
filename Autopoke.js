@@ -1,8 +1,8 @@
-var AutopokeVersion = "0.6.1";
+var AutopokeVersion = "0.7.0";
 
-var AutopokeBranch = "dev"; //  main || dev
+var AutopokeBranch = "main"; //  main || dev
 
-var lastCompatibleVersion = "0.7.9";
+var lastCompatibleVersion = "0.10.9";
 if (versionCompare(App.game.update.version, lastCompatibleVersion) === 1) {
 	Notifier.notify({
 		title:
