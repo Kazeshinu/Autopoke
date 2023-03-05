@@ -10,9 +10,6 @@ if (!Autopoke) var Autopoke = {};
 		interval: [],
 		intervalFunction: function () {
 			return setInterval(() => {
-				if (Mine.loadingNewLayer) {
-					return;
-				}
 				if (this._useRestores) {
 					for (let potion of this._potionArray) {
 						while (player._itemList[potion]() > 0 && ((AU.energy + AU.calculateItemEffect(GameConstants.EnergyRestoreSize[potion])) <= AU.getMaxEnergy())) {
@@ -25,68 +22,80 @@ if (!Autopoke) var Autopoke = {};
 					for (let s of starts) {
 						for (let y = s.y; y < Underground.sizeX; y += 3) { // these two are swapped so that y goes vertical and x goes horizontal
 							for (let x = s.x; x < AU.getSizeY(); x += 3) {
-								if (AU.energy < this._minEnergy) {
+								if (AU.energy < this._minEnergy || Mine.rewardNumbers.length===0) {
 									return
 								}
 								this.smartMine(x, y)
+								
 							}
 						}
 					}
+					
 					// mine random spots if the grid is done but the layer isn't
-					while (AU.energy >= this._minEnergy) {
+					let maxT=10;
+					while (AU.energy >= this._minEnergy &&maxT--) {
 						const x = Rand.intBetween(0, AU.getSizeY() - 1);
 						const y = Rand.intBetween(0, Underground.sizeX - 1);
 						this.smartMine(x, y);
 					}
+					
 				}).bind(this)()
 			}, this.intervalTime);
 		},
 
 		// for some reason X is down and Y is right
 		mine: function (x, y) {
+			
 			if(Mine.grid[x]){
 			if(Mine.grid[x][y]){
-			while (Mine.grid[x][y]() > 0 && AU.energy >= Underground.CHISEL_ENERGY) {
+				let maxT=10;
+			while (Mine.grid[x][y]() > 0 && AU.energy >= Underground.CHISEL_ENERGY&&maxT--) {
 				Mine.chisel(x, y);
 			}
 		}
 		}
 		},
 		smartMine: function (x, y) {
-			if(Mine.loadingNewLayer) return;
+			if(Mine.rewardNumbers.length===0) return;
 			this.mine(x, y)
 			const reward = Mine.rewardGrid[x][y];
 
-			function rotate(ls, N) {
-				while (N--) {
-					ls = ls[0].map((val, index) => ls.map(row => row[index]).reverse());
-				}
-				return ls
-			}
+	
 
-			if (Mine.rewardNumbers.includes(reward.value)) {
-				let space = Array.from(UndergroundItems.list.find(v => v.id === reward.value).space)
-				if (space[0][0].rotations !== reward.rotations) {
-					space = rotate(space, [0, 1, 3, 2].indexOf(reward.rotations))
-				}
-				let X, Y;
-				for (let j = 0; j < space.length; j++) {
-					for (let i = 0; i < space[0].length; i++) {
-						if (reward.x === space[j][i].x && reward.y === space[j][i].y) {
-							[X, Y] = [j, i]
-						}
-					}
-				}
+
+			if(Mine.rewardNumbers.includes(reward.value)) {
+
+
 				
+				let X,Y,xsize,ysize;
+				{
+				const {x,y,sizeY,sizeX,rotations} = reward;
+				[Y,X,xsize,ysize] = [
+					[x, y,sizeX,sizeY],
+					[sizeY - 1 - y, x,sizeY,sizeX],
+					[y, sizeX - 1 - x,sizeY,sizeX],
+					[sizeX - 1 - x, sizeY - 1 - y,sizeX,sizeY],
+					
+				  ][rotations % 4];
+				}
 
-				for (let j = 0; j < space.length; j++) {
-					for (let i = 0; i < space[0].length; i++) {
-						if (space[j][i].value !== 0) {
-							this.mine(x + j - X, y + i - Y)
+
+				  for(var i =0;i<ysize;i++) {
+					for(var j=0;j<xsize;j++) {
+						if(Mine.rewardGrid[x-X+i][y-Y+j]!==0) {
+							this.mine(x-X+i,y-Y+j);
 						}
 					}
-				}
+				  }
+
+
+
 			}
+
+			
+
+
+
 		},
 		_potionArray: ['LargeRestore', 'MediumRestore', 'SmallRestore'],
 
