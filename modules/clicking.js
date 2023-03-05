@@ -12,6 +12,8 @@ if (!Autopoke) var Autopoke = {};
 
 		interval: null,
 
+		mostEffPlace: null,
+
 
 
 		intervalFunction: function () {
@@ -29,44 +31,44 @@ if (!Autopoke) var Autopoke = {};
 				}
 			}, this.intervalTime);
 		},
-		
+
 
 
 		get cps() {
 			return this.rollingAvgCPS.getAverageGain();
 		},
 		rollingAvgCPS: function rollingAverageCPS() {
-			const window=[];
-			let lastValue=App.game.statistics.clickAttacks();
-			
-			const intervalId = setInterval(()=> {
+			const window = [];
+			let lastValue = App.game.statistics.clickAttacks();
+
+			const intervalId = setInterval(() => {
 				const currentValue = App.game.statistics.clickAttacks();
 				const timestamp = new Date().getTime();
-				window.push({timestamp,value:currentValue});
-			  const earliestTimestamp = timestamp - 10000;
-			  while (window.length > 0 && window[0].timestamp < earliestTimestamp) {
-				window.shift();
-			  }
-			
-			  
-			  lastValue=currentValue;
+				window.push({ timestamp, value: currentValue });
+				const earliestTimestamp = timestamp - 10000;
+				while (window.length > 0 && window[0].timestamp < earliestTimestamp) {
+					window.shift();
+				}
+
+
+				lastValue = currentValue;
 			}, 1000); // Call the function every second (1000ms)
-			  
-			  function getAverageGain() {
-					if (window.length > 1) {
-				const timeSpan = window[window.length - 1].timestamp - window[0].timestamp;
-				const valueSpan = window[window.length - 1].value - window[0].value;
-				return valueSpan / timeSpan*1000;
-			  }
-	
-				  
-			  }
-			  function destroy() {
+
+			function getAverageGain() {
+				if (window.length > 1) {
+					const timeSpan = window[window.length - 1].timestamp - window[0].timestamp;
+					const valueSpan = window[window.length - 1].value - window[0].value;
+					return valueSpan / timeSpan * 1000;
+				}
+
+
+			}
+			function destroy() {
 				clearInterval(intervalId);
-			  }
-			  return {getAverageGain,window,destroy}
-				
-			}(),
+			}
+			return { getAverageGain, window, destroy }
+
+		}(),
 
 
 
@@ -81,208 +83,224 @@ if (!Autopoke) var Autopoke = {};
 				this._intervalTime = val;
 				this.Start();
 			} else {
-				console.log(val+" is not a valid number");
+				console.log(val + " is not a valid number");
 			}
 		},
-		
+
 		isRunning: false,
 		Start: function () {
-			if(this.interval) 
+			if (this.interval)
 				clearInterval(this.interval);
-		    this.isRunning=true;
+			this.isRunning = true;
 			let button = document.getElementById('kazeClickingUIButton');
 			button.classList.remove("btn-danger");
 			button.classList.add("btn-success");
-			button.children[0].innerHTML="ON";
+			button.children[0].innerHTML = "ON";
 			this.interval = this.intervalFunction();
 		},
 		Stop: function () {
-			if(!this.interval) return;
+			if (!this.interval) return;
 			clearInterval(this.interval);
-			this.isRunning=false;
-			this.interval=null;
+			this.isRunning = false;
+			this.interval = null;
 			let button = document.getElementById('kazeClickingUIButton');
 			button.classList.remove("btn-success");
 			button.classList.add("btn-danger");
-			button.children[0].innerHTML="OFF";
-			
+			button.children[0].innerHTML = "OFF";
+
 		},
+
+		dmgTypeCache: {},
+
+
+
 		helpFunctions: {
 			latestDockUnlocked: function () {
 				return TownList[
-				  GameConstants.DockTowns[player.highestRegion()]
+					GameConstants.DockTowns[player.highestRegion()]
 				].isUnlocked();
-			  },
-			  accessToRoute: function (route, region) {
+			},
+			accessToRoute: function (route, region) {
 				return (
-				  MapHelper.accessToRoute(route, region) &&
-				  (this.latestDockUnlocked()
-					? region <= player.highestRegion()
-					: region === player.highestRegion())
+					MapHelper.accessToRoute(route, region) &&
+					(this.latestDockUnlocked()
+						? region <= player.highestRegion()
+						: region === player.highestRegion())
 				);
-			  },
-			  betterAccessToTown: function (townName) {
+			},
+			betterAccessToTown: function (townName) {
 				let town = TownList[townName];
-				if(!town) { //might be gym
-				  town = GymList[townName];
-				  if(!town) return false;
-				  if(!town.isUnlocked()) return false;
-				  town = (town.parent!==undefined?town.parent:TownList[town.town]);
+				if (!town) { //might be gym
+					town = GymList[townName];
+					if (!town) return false;
+					if (!town.isUnlocked()) return false;
+					town = (town.parent !== undefined ? town.parent : TownList[town.town]);
 				}
 				return this.latestDockUnlocked()
-				  ? town.isUnlocked() && town.region <= player.highestRegion()
-				  : town.isUnlocked() && town.region === player.highestRegion();
-			  },
+					? town.isUnlocked() && town.region <= player.highestRegion()
+					: town.isUnlocked() && town.region === player.highestRegion();
+			},
 			highestAvailableOneClickRoute: function () {
 				const routes = Routes.regionRoutes
-				  .map((r) => [r.region, r.number])
-				  .filter((r) => this.accessToRoute(r[1], r[0]));
+					.map((r) => [r.region, r.number])
+					.filter((r) => this.accessToRoute(r[1], r[0]));
 				const attack = App.game.party.calculateClickAttack();
 				const found = routes
-				  .reverse()
-				  .find((r) => PokemonFactory.routeHealth(r[1], r[0]) < attack);
+					.reverse()
+					.find((r) => PokemonFactory.routeHealth(r[1], r[0]) < attack);
 				return found || 0;
-			  },
-			  mostEfficientPlaceForExp: function (n=1) {
+			},
+			mostEfficientPlaceForExp: function (n = 1) {
 				let average = (ls) => ls.reduce((a, b) => a + b, 0) / ls.length;
 				let availableRoutes = Routes.regionRoutes.filter((r) =>
-				this.accessToRoute(r.number, r.region)
-			  );
-			  let availableGyms = Object.values(GymList).filter(
-				(g) => g.isUnlocked() && this.betterAccessToTown(g.town)
-			  );
-			  const bonus = App.game.party.multiplier.getBonus('exp');
-			  let avgRouteExp = availableRoutes.map(r=> [[r.region,r.number],Math.floor(average(RouteHelper.getAvailablePokemonList(r.number,r.region).map(p=>PokemonHelper.getPokemonByName(p).exp)) * PokemonFactory.routeLevel(r.number,r.region) * bonus / 9)]);
-			let avgGymExp=availableGyms.map(g=>[g.town,(bonus*1.5*average(g.getPokemonList().map(p=>PokemonHelper.getPokemonByName(p.name).exp*p.level)))/9]);
-			let routeExpPerSec = this.routeCalculatePerSec(avgRouteExp);
-			let gymExpPerSec = this.gymCalculatePerSec(avgGymExp);
-			return this.calculateBest(routeExpPerSec, gymExpPerSec, n);
-			  },
-			  mostEfficientPlaceForMoney: function (n = 1) {
-				let average = (ls) => ls.reduce((a, b) => a + b, 0) / ls.length;
-				let availableRoutes = Routes.regionRoutes.filter((r) =>
-				  this.accessToRoute(r.number, r.region)
+					this.accessToRoute(r.number, r.region)
 				);
 				let availableGyms = Object.values(GymList).filter(
-				  (g) => g.isUnlocked() && this.betterAccessToTown(g.town)
+					(g) => g.isUnlocked() && this.betterAccessToTown(g.town)
+				);
+				const bonus = App.game.party.multiplier.getBonus('exp');
+				let avgRouteExp = availableRoutes.map(r => [[r.region, r.number], Math.floor(average(RouteHelper.getAvailablePokemonList(r.number, r.region).map(p => PokemonHelper.getPokemonByName(p).exp)) * PokemonFactory.routeLevel(r.number, r.region) * bonus / 9)]);
+				let avgGymExp = availableGyms.map(g => [g.town, (bonus * 1.5 * average(g.getPokemonList().map(p => PokemonHelper.getPokemonByName(p.name).exp * p.level))) / 9]);
+				Autopoke.clicking.dmgTypeCache={};
+				let routeExpPerSec = this.routeCalculatePerSec(avgRouteExp);
+				let gymExpPerSec = this.gymCalculatePerSec(avgGymExp);
+
+				return this.calculateBest(routeExpPerSec, gymExpPerSec, n);
+			},
+			mostEfficientPlaceForMoney: function (n = 1) {
+				let average = (ls) => ls.reduce((a, b) => a + b, 0) / ls.length;
+				let availableRoutes = Routes.regionRoutes.filter((r) =>
+					this.accessToRoute(r.number, r.region)
+				);
+				let availableGyms = Object.values(GymList).filter(
+					(g) => g.isUnlocked() && this.betterAccessToTown(g.town)
 				);
 				const bonus = App.game.party.multiplier.getBonus("money");
 				let routeMoney = availableRoutes.map((r) => {
 					let arr = Array(100)
-					.fill(0)
-					.map(() => PokemonFactory.routeMoney(r.number, r.region));
-				  return [[r.region, r.number], bonus *average(arr)];
+						.fill(0)
+						.map(() => PokemonFactory.routeMoney(r.number, r.region));
+					return [[r.region, r.number], bonus * average(arr)];
 				});
 				let gymMoney = availableGyms.map((g) => [
-				  g.town,
-				  (bonus * g.moneyReward) / g.getPokemonList().length,
+					g.town,
+					(bonus * g.moneyReward) / g.getPokemonList().length,
 				]);
+				Autopoke.clicking.dmgTypeCache={};
 				let routeMoneyPerSec = this.routeCalculatePerSec(routeMoney);
 				let gymMoneyPerSec = this.gymCalculatePerSec(gymMoney);
 				return this.calculateBest(routeMoneyPerSec, gymMoneyPerSec, n);
-			  },
-			  mostEfficientPlaceForGemType: function (type,n=1) {
+			},
+			mostEfficientPlaceForGemType: function (type, n = 1) {
 				let availableRoutes = Routes.regionRoutes.filter((r) =>
-				this.accessToRoute(r.number, r.region)
-			  );
-			  let availableGyms = Object.values(GymList).filter(
-				(g) => g.isUnlocked() && this.betterAccessToTown(g.town)
-			  );
-			  let avgRouteGems = availableRoutes.map(r=> [
-				[r.region,r.number],
-				RouteHelper.getAvailablePokemonList(r.number,r.region).map(p=>PokemonHelper.getPokemonByName(p)).filter((p) => p.type1 === type || p.type2 === type).length / RouteHelper.getAvailablePokemonList(r.number,r.region).length
-			]);
-			let avgGymGems=availableGyms.map(g=>[
-				g.town,
-				g.getPokemonList().map(p=>PokemonHelper.getPokemonByName(p.name)).filter((p) => p.type1 === type || p.type2 === type).length * GameConstants.GYM_GEMS / g.getPokemonList().length
-			]);
-			let routeGemsPerSec = this.routeCalculatePerSec(avgRouteGems);
-			let gymGemsPerSec = this.gymCalculatePerSec(avgGymGems);
-			return this.calculateBest(routeGemsPerSec, gymGemsPerSec, n);
+					this.accessToRoute(r.number, r.region)
+				);
+				let availableGyms = Object.values(GymList).filter(
+					(g) => g.isUnlocked() && this.betterAccessToTown(g.town)
+				);
+				let avgRouteGems = availableRoutes.map(r => [
+					[r.region, r.number],
+					RouteHelper.getAvailablePokemonList(r.number, r.region).map(p => PokemonHelper.getPokemonByName(p)).filter((p) => p.type1 === type || p.type2 === type).length / RouteHelper.getAvailablePokemonList(r.number, r.region).length
+				]);
+				let avgGymGems = availableGyms.map(g => [
+					g.town,
+					g.getPokemonList().map(p => PokemonHelper.getPokemonByName(p.name)).filter((p) => p.type1 === type || p.type2 === type).length * GameConstants.GYM_GEMS / g.getPokemonList().length
+				]);
+				Autopoke.clicking.dmgTypeCache={};
+				let routeGemsPerSec = this.routeCalculatePerSec(avgRouteGems);
+				let gymGemsPerSec = this.gymCalculatePerSec(avgGymGems);
+				return this.calculateBest(routeGemsPerSec, gymGemsPerSec, n);
 
 
-			  },
-			  routeCalculatePerSec: function (routes) {
-				let average = (ls) => ls.reduce((a, b) => a + b, 0) / ls.length;
+			},
+			routeCalculatePerSec: function (routes) {			  
+				const clickAttack=App.game.party.calculateClickAttack();
+				const cps =Autopoke.clicking.cps;
+				return routes.map(([[region, route], rate]) => {
+				  const routeHealth = PokemonFactory.routeHealth(route, region);
+				  let avgHits=0;
+				  let c=1;
+				  const avgclicks = Math.ceil(routeHealth / clickAttack)
+				  Object.values(RouteHelper.getAvailablePokemonList(route, region)).forEach(p => {
+					const poke = PokemonHelper.getPokemonByName(p);
+					const types=[poke.type1,poke.type2].sort();
+					const key = types.join(",");
+					let d = Autopoke.clicking.dmgTypeCache[key];
+					if (!d) {
+					  d = App.game.party.calculatePokemonAttack(poke.type1, poke.type2);
+					  Autopoke.clicking.dmgTypeCache[key] = d;
+					}
+					avgHits+=(Math.ceil(routeHealth / d)-avgHits)/c++;
 				
-				return routes.map((r) => {
-				  let [[region, route], rate] = r;
-				  let pokemon = Object.values(RouteHelper.getAvailablePokemonList(route,region))
-					.map((p) => PokemonHelper.getPokemonByName(p));
-				  let hits = pokemon
-					.map((p) => App.game.party.calculatePokemonAttack(p.type1, p.type2))
-					.map((d) =>
-					  Math.ceil(PokemonFactory.routeHealth(route, region) / d)
-					);
-				  let clicks = pokemon
-					.map(() => App.game.party.calculateClickAttack())
-					.map((d) =>
-					  Math.ceil(PokemonFactory.routeHealth(route, region) / d)
-					);
-				  return [
-					[region, route],
-					rate / Math.min(average(hits), average(clicks) / Autopoke.clicking.cps),
-				  ];
+				})
+				  return [[region, route], rate / Math.min(avgHits, avgclicks / cps)];
 				});
 			  },
-			  gymCalculatePerSec: function (gyms) {
-				let average = (ls) => ls.reduce((a, b) => a + b, 0) / ls.length;
-				return gyms.map((r) => {
-				  let [gym, rate] = r;
-				  let hits = GymList[gym].getPokemonList().map((p) => {
-					let poke = PokemonHelper.getPokemonByName(p.name);
-					return Math.ceil(
-					  p.maxHealth /
-						App.game.party.calculatePokemonAttack(poke.type1, poke.type2)
-					);
-				  });
-				  let clicks = GymList[gym].getPokemonList().map((p) =>
-					Math.ceil(p.maxHealth / App.game.party.calculateClickAttack())
-				  );
-				  return [gym, rate / Math.min(average(hits), average(clicks) / Autopoke.clicking.cps)];
+			gymCalculatePerSec: function (gyms) {
+				const clickAttack=App.game.party.calculateClickAttack();
+				const cps = Autopoke.clicking.cps;
+				return gyms.map(([gym, rate]) => {
+					let avgHits=0;
+					let c=1;
+					let avgClicks=0;
+					const pokemonList=GymList[gym].getPokemonList();
+					for (const p of pokemonList) {
+						const poke = PokemonHelper.getPokemonByName(p.name);
+						const types = [poke.type1, poke.type2].sort();
+						const key = types.join(",");
+						let d = Autopoke.clicking.dmgTypeCache[key];
+						if (!d) {
+						  d = App.game.party.calculatePokemonAttack(poke.type1, poke.type2);
+						  Autopoke.clicking.dmgTypeCache[key] = d;
+						}
+
+						avgHits+=(Math.ceil(p.maxHealth / d)-avgHits)/c;
+						avgClicks+=(Math.ceil(p.maxHealth/clickAttack)-avgClicks)/c++;
+					}
+					return [gym, rate / Math.min(avgHits, avgClicks / cps)];
 				});
-			  },
-			  calculateBest: function (routes, gyms, n = 1) {
+			},
+			calculateBest: function (routes, gyms, n = 1) {
 				let both = routes.concat(gyms);
 				both.sort((r1, r2) => r2[1] - r1[1]);
 				if (n === 1) return both[0];
 				return both.slice(0, n);
-			  },
+			},
 		}
 	};
 
-	Autopoke.gym ={
+	Autopoke.gym = {
 
 		selectedGym: null,
 
 
 		interval: null,
-		notificationValue:NotificationConstants.NotificationSetting.General.gym_won.inGameNotification.value,
+		notificationValue: NotificationConstants.NotificationSetting.General.gym_won.inGameNotification.value,
 
-		
+
 		isRunning: false,
 		Start: function () {
 
-		    this.isRunning=true;
+			this.isRunning = true;
 			let button = document.getElementById('kazeAutoGym');
 			button.classList.remove("btn-danger");
 			button.classList.add("btn-success");
-			button.children[0].innerHTML="ON";
+			button.children[0].innerHTML = "ON";
 
 		},
 		Stop: function () {
 
-			this.selectedGym=null;
-			this.isRunning=false;
-			NotificationConstants.NotificationSetting.General.gym_won.inGameNotification.value=this.notificationValue;
+			this.selectedGym = null;
+			this.isRunning = false;
+			NotificationConstants.NotificationSetting.General.gym_won.inGameNotification.value = this.notificationValue;
 			let button = document.getElementById('kazeAutoGym');
 			button.classList.remove("btn-success");
 			button.classList.add("btn-danger");
-			button.children[0].innerHTML="OFF";
-			
+			button.children[0].innerHTML = "OFF";
+
 		},
-		
-		
+
+
 
 
 	}
@@ -290,20 +308,20 @@ if (!Autopoke) var Autopoke = {};
 	GymRunner.gymObservable.subscribe(function (newValue) {
 		Autopoke.gym.selectedGym = newValue;
 	});
-	player.route.subscribe((function (newValue){
-		this.selectedGym=null;
-		NotificationConstants.NotificationSetting.General.gym_won.inGameNotification.value=this.notificationValue;
+	player.route.subscribe((function (newValue) {
+		this.selectedGym = null;
+		NotificationConstants.NotificationSetting.General.gym_won.inGameNotification.value = this.notificationValue;
 	}).bind(Autopoke.gym));
 	player.town.subscribe((function (newValue) {
-		NotificationConstants.NotificationSetting.General.gym_won.inGameNotification.value=this.notificationValue;
-		if (this.selectedGym===null) return;
+		NotificationConstants.NotificationSetting.General.gym_won.inGameNotification.value = this.notificationValue;
+		if (this.selectedGym === null) return;
 
-		if (player.route()!==0||(player.town()!==(this.selectedGym.parent!==undefined?this.selectedGym.parent:TownList[this.selectedGym.town]))) {
-			this.selectedGym=null;
+		if (player.route() !== 0 || (player.town() !== (this.selectedGym.parent !== undefined ? this.selectedGym.parent : TownList[this.selectedGym.town]))) {
+			this.selectedGym = null;
 			return;
 		}
 		if (this.isRunning) {
-			NotificationConstants.NotificationSetting.General.gym_won.inGameNotification.value=false;
+			NotificationConstants.NotificationSetting.General.gym_won.inGameNotification.value = false;
 			GymRunner.startGym(this.selectedGym);
 		}
 
@@ -312,14 +330,14 @@ if (!Autopoke) var Autopoke = {};
 	}).bind(Autopoke.gym));
 })();
 
-	//Create Clicking UI
-	(function () {
-		if(Autopoke.clicking.ui) return;
-		Autopoke.clicking.ui=true;
-		let battleContainer=document.getElementById("battleContainer");
-		let elem = document.createElement("div");
-		elem.id="kazeClickingUI";
-		elem.innerHTML=`
+//Create Clicking UI
+(function () {
+	if (Autopoke.clicking.ui) return;
+	Autopoke.clicking.ui = true;
+	let battleContainer = document.getElementById("battleContainer");
+	let elem = document.createElement("div");
+	elem.id = "kazeClickingUI";
+	elem.innerHTML = `
 		<div class="row p-0 no-gutters">
 			<button id="kazeClickingUIButton" class="btn btn-block btn-danger col-4">Auto Click [<span>OFF</span>]</button>
 			<div class="input-group col-8">
@@ -347,81 +365,85 @@ if (!Autopoke) var Autopoke = {};
 	</div>
 		`;
 
-		battleContainer.children[0].after(elem);
-		let elem2 = document.getElementById("kazeInputGroupMostEff2")
-		Object.values(PokemonType).filter(t=> t>=0).forEach(e=> {
-			let opt = document.createElement("option");
-			opt.value=e;
-			opt.innerHTML=PokemonType[e];
-			elem2.append(opt);
-		});
+	battleContainer.children[0].after(elem);
+	let elem2 = document.getElementById("kazeInputGroupMostEff2")
+	Object.values(PokemonType).filter(t => t >= 0).forEach(e => {
+		let opt = document.createElement("option");
+		opt.value = e;
+		opt.innerHTML = PokemonType[e];
+		elem2.append(opt);
+	});
 
 
-		setInterval(()=> {
-			if(Autopoke.clicking.cps!==undefined)
-			document.getElementById("kazeCPSText").innerHTML=Autopoke.clicking.cps.toFixed(1)
-			let selmode=document.getElementById("kazeInputGroupMostEff1").value;
-			let mostEffPlace;
-			switch (selmode) {
-				case "1":
-					mostEffPlace=Autopoke.clicking.helpFunctions.mostEfficientPlaceForExp();
+	setInterval(() => {
+		if (Autopoke.clicking.cps !== undefined)
+			document.getElementById("kazeCPSText").innerHTML = Autopoke.clicking.cps.toFixed(1);
+		let selmode = document.getElementById("kazeInputGroupMostEff1").value;
+		switch (selmode) {
+			case "1":
+				Autopoke.clicking.mostEffPlace = Autopoke.clicking.helpFunctions.mostEfficientPlaceForExp();
 				break;
-				case "2":
-					mostEffPlace=Autopoke.clicking.helpFunctions.mostEfficientPlaceForMoney();
-
+			case "2":
+				Autopoke.clicking.mostEffPlace = Autopoke.clicking.helpFunctions.mostEfficientPlaceForMoney();
 				break;
-				case "3":
-					mostEffPlace=Autopoke.clicking.helpFunctions.mostEfficientPlaceForGemType(parseInt(document.getElementById("kazeInputGroupMostEff2").value,10));
-
+			case "3":
+				Autopoke.clicking.mostEffPlace = Autopoke.clicking.helpFunctions.mostEfficientPlaceForGemType(parseInt(document.getElementById("kazeInputGroupMostEff2").value, 10));
 				break;
-				default:
-					return;
-			}
-			if(typeof mostEffPlace[0] === "string") {
-			document.getElementById("kazeMostEffBtn").innerHTML=mostEffPlace[0]+" ("+mostEffPlace[1].toFixed(0)+")/s"
-			}
-			else {
-				document.getElementById("kazeMostEffBtn").innerHTML=Routes.getName(mostEffPlace[0][1],mostEffPlace[0][0])+" ("+mostEffPlace[1].toFixed(0)+")/s";
-			}
-		},1000);
+			default:
+				return;
+		}
+		if (typeof Autopoke.clicking.mostEffPlace[0] === "string") {
+			document.getElementById("kazeMostEffBtn").innerHTML = Autopoke.clicking.mostEffPlace[0] + " (" + Autopoke.clicking.mostEffPlace[1].toFixed(0) + ")/s"
+		}
+		else {
+			document.getElementById("kazeMostEffBtn").innerHTML = Routes.getName(Autopoke.clicking.mostEffPlace[0][1], Autopoke.clicking.mostEffPlace[0][0]) + " (" + Autopoke.clicking.mostEffPlace[1].toFixed(0) + ")/s";
+		}
+	}, 1000);
 
 
-		let buttonGym = document.getElementById('kazeAutoGym');
-		let buttonDung = document.getElementById('kazeAutoDung');
 
-		document.getElementById('kazeClickingUIButton').addEventListener('click', ()=>{Autopoke.clicking.isRunning?Autopoke.clicking.Stop():Autopoke.clicking.Start();});
-		document.getElementById('kazeAutoGym').addEventListener('click',()=>{Autopoke.gym.isRunning?Autopoke.gym.Stop():Autopoke.gym.Start();});
-		document.getElementById('kazeMostEffBtn').addEventListener('click',function() {
-			let route=Autopoke.clicking.helpFunctions.highestAvailableOneClickRoute();
+	document.getElementById('kazeClickingUIButton').addEventListener('click', () => { Autopoke.clicking.isRunning ? Autopoke.clicking.Stop() : Autopoke.clicking.Start(); });
+	document.getElementById('kazeAutoGym').addEventListener('click', () => { Autopoke.gym.isRunning ? Autopoke.gym.Stop() : Autopoke.gym.Start(); });
+	document.getElementById('kazeMostEffBtn').addEventListener('click', function () {
+		if (Autopoke.clicking.mostEffPlace === null) return;
+		if (typeof Autopoke.clicking.mostEffPlace[0] === "string") {
+			let gym = GymList[Autopoke.clicking.mostEffPlace[0]];
+			let = gymTown = (gym.parent !== undefined ? gym.parent : TownList[gym.town])
+			MapHelper.moveToTown(gymTown.name);
+			gym.protectedOnclick();
+		}
+		else {
+			let route = Autopoke.clicking.mostEffPlace[0];
 			MapHelper.moveToRoute(route[1], route[0]);
-		})
-		
-		document.getElementById("kazeCPS").addEventListener('input',function() {Autopoke.clicking.intervalTime=parseInt(this.value,10)});
-		
-		
-		let mostEff1 = document.getElementById("kazeInputGroupMostEff1");
-		mostEff1.addEventListener("change",(event)=> {
-			switch (event.target.value) {
-					case "3":
-						document.getElementById("kazeInputGroupMostEff1").classList.add("col-4");
-						document.getElementById("kazeInputGroupMostEff2").classList.remove("d-none");
+		}
+	})
 
-					break;
-
-					default:
-						document.getElementById("kazeInputGroupMostEff1").classList.remove("col-4");
-						document.getElementById("kazeInputGroupMostEff2").classList.add("d-none");
+	document.getElementById("kazeCPS").addEventListener('input', function () { Autopoke.clicking.intervalTime = parseInt(this.value, 10) });
 
 
-					break;
+	let mostEff1 = document.getElementById("kazeInputGroupMostEff1");
+	mostEff1.addEventListener("change", (event) => {
+		switch (event.target.value) {
+			case "3":
+				document.getElementById("kazeInputGroupMostEff1").classList.add("col-4");
+				document.getElementById("kazeInputGroupMostEff2").classList.remove("d-none");
 
-		
-		
-		
-			}
-		
-		
-		
-		})
+				break;
 
-	})();
+			default:
+				document.getElementById("kazeInputGroupMostEff1").classList.remove("col-4");
+				document.getElementById("kazeInputGroupMostEff2").classList.add("d-none");
+
+
+				break;
+
+
+
+
+		}
+
+
+
+	})
+
+})();
