@@ -66,9 +66,7 @@ if (!Autopoke) var Autopoke = {};
               }
             }
           } else {
-            let nextPokemon = App.game.party.caughtPokemon.filter(
-              (partyPokemon) => BreedingController.visible(partyPokemon)()
-            )[0];
+            let nextPokemon = PartyController.hatcherySortedList[0];
             if (nextPokemon) {
               AB.addPokemonToHatchery(nextPokemon);
             }
