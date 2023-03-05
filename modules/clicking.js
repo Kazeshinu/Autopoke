@@ -181,6 +181,27 @@ if (!Autopoke) var Autopoke = {};
 				let gymMoneyPerSec = this.gymCalculatePerSec(gymMoney);
 				return this.calculateBest(routeMoneyPerSec, gymMoneyPerSec, n);
 			  },
+			  mostEfficientPlaceForGemType: function (type,n=1) {
+				let availableRoutes = Routes.regionRoutes.filter((r) =>
+				this.accessToRoute(r.number, r.region)
+			  );
+			  let availableGyms = Object.values(GymList).filter(
+				(g) => g.isUnlocked() && this.betterAccessToTown(g.town)
+			  );
+			  let avgRouteGems = availableRoutes.map(r=> [
+				[r.region,r.number],
+				RouteHelper.getAvailablePokemonList(r.number,r.region).map(p=>PokemonHelper.getPokemonByName(p)).filter((p) => p.type1 === type || p.type2 === type).length / RouteHelper.getAvailablePokemonList(r.number,r.region).length
+			]);
+			let avgGymGems=availableGyms.map(g=>[
+				g.town,
+				g.getPokemonList().map(p=>PokemonHelper.getPokemonByName(p.name)).filter((p) => p.type1 === type || p.type2 === type).length * GameConstants.GYM_GEMS / g.getPokemonList().length
+			]);
+			let routeGemsPerSec = this.routeCalculatePerSec(avgRouteGems);
+			let gymGemsPerSec = this.gymCalculatePerSec(avgGymGems);
+			return this.calculateBest(routeGemsPerSec, gymGemsPerSec, n);
+
+
+			  },
 			  routeCalculatePerSec: function (routes) {
 				let average = (ls) => ls.reduce((a, b) => a + b, 0) / ls.length;
 				
@@ -236,53 +257,24 @@ if (!Autopoke) var Autopoke = {};
 
 
 		interval: null,
+		notificationValue:NotificationConstants.NotificationSetting.General.gym_won.inGameNotification.value,
 
-
-
-		intervalFunction: function () {
-			return setInterval(() => {
-				if (this.selectedGym===null) return;
-
-				if (player.route()!==0||(player.town()!==(this.selectedGym.parent!==undefined?this.selectedGym.parent:TownList[this.selectedGym.town]))) {
-
-					this.selectedGym=null;
-					return;
-				}
-				if (this.isRunning && App.game.gameState === 6) {
-					GymRunner.startGym(this.selectedGym);
-				}
-			}, this.intervalTime);
-		},
-		_intervalTime: 100,
-		get intervalTime() {
-			return this._intervalTime;
-		},
-		set intervalTime(val) {
-			if (Number.isInteger(val)) {
-				this._intervalTime = val;
-				this.Start();
-			} else {
-				console.log(val+" is not a valid number");
-			}
-		},
 		
 		isRunning: false,
 		Start: function () {
-			if(this.interval) 
-				clearInterval(this.interval);
+
 		    this.isRunning=true;
 			let button = document.getElementById('kazeAutoGym');
 			button.classList.remove("btn-danger");
 			button.classList.add("btn-success");
 			button.children[0].innerHTML="ON";
-			this.interval = this.intervalFunction();
+
 		},
 		Stop: function () {
-			if(!this.interval) return;
-			clearInterval(this.interval);
+
 			this.selectedGym=null;
 			this.isRunning=false;
-			this.interval=null;
+			NotificationConstants.NotificationSetting.General.gym_won.inGameNotification.value=this.notificationValue;
 			let button = document.getElementById('kazeAutoGym');
 			button.classList.remove("btn-success");
 			button.classList.add("btn-danger");
@@ -298,6 +290,26 @@ if (!Autopoke) var Autopoke = {};
 	GymRunner.gymObservable.subscribe(function (newValue) {
 		Autopoke.gym.selectedGym = newValue;
 	});
+	player.route.subscribe((function (newValue){
+		this.selectedGym=null;
+		NotificationConstants.NotificationSetting.General.gym_won.inGameNotification.value=this.notificationValue;
+	}).bind(Autopoke.gym));
+	player.town.subscribe((function (newValue) {
+		NotificationConstants.NotificationSetting.General.gym_won.inGameNotification.value=this.notificationValue;
+		if (this.selectedGym===null) return;
+
+		if (player.route()!==0||(player.town()!==(this.selectedGym.parent!==undefined?this.selectedGym.parent:TownList[this.selectedGym.town]))) {
+			this.selectedGym=null;
+			return;
+		}
+		if (this.isRunning) {
+			NotificationConstants.NotificationSetting.General.gym_won.inGameNotification.value=false;
+			GymRunner.startGym(this.selectedGym);
+		}
+
+
+
+	}).bind(Autopoke.gym));
 })();
 
 	//Create Clicking UI
@@ -337,10 +349,10 @@ if (!Autopoke) var Autopoke = {};
 
 		battleContainer.children[0].after(elem);
 		let elem2 = document.getElementById("kazeInputGroupMostEff2")
-		Object.values(PokemonType).filter(p=>p>=0).map(p=>PokemonType[p]).forEach(e=> {
+		Object.values(PokemonType).filter(t=> t>=0).forEach(e=> {
 			let opt = document.createElement("option");
 			opt.value=e;
-			opt.innerHTML=e;
+			opt.innerHTML=PokemonType[e];
 			elem2.append(opt);
 		});
 
@@ -359,6 +371,7 @@ if (!Autopoke) var Autopoke = {};
 
 				break;
 				case "3":
+					mostEffPlace=Autopoke.clicking.helpFunctions.mostEfficientPlaceForGemType(parseInt(document.getElementById("kazeInputGroupMostEff2").value,10));
 
 				break;
 				default:
