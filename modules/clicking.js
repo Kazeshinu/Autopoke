@@ -427,23 +427,12 @@ if (!Autopoke) var Autopoke = {};
 			case "3":
 				document.getElementById("kazeInputGroupMostEff1").classList.add("col-4");
 				document.getElementById("kazeInputGroupMostEff2").classList.remove("d-none");
-
 				break;
-
 			default:
 				document.getElementById("kazeInputGroupMostEff1").classList.remove("col-4");
 				document.getElementById("kazeInputGroupMostEff2").classList.add("d-none");
-
-
 				break;
-
-
-
-
 		}
-
-
-
 	})
 
 })();
