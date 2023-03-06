@@ -28,6 +28,8 @@ if (!Autopoke) var Autopoke = {};
 					case 4:
 						DungeonBattle.clickAttack();
 						break;
+					case 9:
+						TemporaryBattleBattle.clickAttack();
 				}
 			}, this.intervalTime);
 		},
