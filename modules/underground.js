@@ -101,7 +101,7 @@ if (!Autopoke) var Autopoke = {};
 
 		_minEnergy: 10,
 		get minEnergy() {
-			return this._intervalTime;
+			return this._minEnergy;
 		},
 		set minEnergy(val) {
 			if (Number.isInteger(val)) {

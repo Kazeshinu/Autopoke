@@ -19,8 +19,8 @@ google_analytics: "G-W9TN9CGVMN"
 minima:
   skin: solarized-dark
   social_links:
-    github: Kazeshinu
-  
+    - { platform: github, user_url: "https://github.com/Kazeshinu/" }
+
 header_pages:
   - index.md
   - infopages/breeding.md
