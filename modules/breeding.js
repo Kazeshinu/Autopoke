@@ -66,9 +66,15 @@ if (!Autopoke) var Autopoke = {};
               }
             }
           } else {
-            let nextPokemon = App.game.party.caughtPokemon.filter(
-              (partyPokemon) => BreedingController.visible(partyPokemon)()
-            )[0];
+
+                    // Don't adjust attack based on region if debuff is disabled
+        const region = App.game.challenges.list.regionalAttackDebuff.active() ? BreedingController.regionalAttackDebuff() : -1;
+        let nextPokemon= App.game.party.caughtPokemon.filter(p=>BreedingController.visible(p)()).reduce((a,b)=>PartyController.compareBy(Settings.getSetting('hatcherySort').observableValue(), Settings.getSetting('hatcherySortDirection').observableValue(), region)(a,b)==1?b:a);
+  
+
+
+
+
             if (nextPokemon) {
               AB.addPokemonToHatchery(nextPokemon);
             }

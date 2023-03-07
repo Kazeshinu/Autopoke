@@ -1,4 +1,5 @@
-var AutopokeVersion = "0.7.0";
+
+var AutopokeVersion = "0.7.2";
 
 var AutopokeBranch = "main"; //  main || dev
 
