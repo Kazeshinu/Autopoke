@@ -527,11 +527,12 @@ if (!Autopoke) var Autopoke = {};
 	document.getElementById('kazeAutoGym').addEventListener('click', () => { Autopoke.gym.isRunning ? Autopoke.gym.Stop() : Autopoke.gym.Start(); });
 	document.getElementById('kazeAutoDungeon').addEventListener('click', () => { Autopoke.dungeon.isRunning ? Autopoke.dungeon.Stop() : Autopoke.dungeon.Start(); });
 	document.getElementById('kazeMostEffBtn').addEventListener('click', function () {
-		if (Autopoke.clicking.mostEffPlace === null) return;
+		if (Autopoke.clicking.mostEffPlace === null || App.game.GameState===4) return;
 		if (typeof Autopoke.clicking.mostEffPlace[0] === "string") {
 			let gym = GymList[Autopoke.clicking.mostEffPlace[0]];
 			let = gymTown = (gym.parent !== undefined ? gym.parent : TownList[gym.town])
 			MapHelper.moveToTown(gymTown.name);
+			player.region=gymTown.region;
 			gym.protectedOnclick();
 		}
 		else {
