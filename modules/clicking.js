@@ -163,7 +163,7 @@ if (!Autopoke) var Autopoke = {};
 				const bonus = App.game.party.multiplier.getBonus('exp');
 				let avgRouteExp = availableRoutes.map(r => [[r.region, r.number], Math.floor(average(RouteHelper.getAvailablePokemonList(r.number, r.region).map(p => PokemonHelper.getPokemonByName(p).exp)) * PokemonFactory.routeLevel(r.number, r.region) * bonus / 9)]);
 				let avgGymExp = availableGyms.map(g => [g.town, (bonus * 1.5 * average(g.getPokemonList().map(p => PokemonHelper.getPokemonByName(p.name).exp * p.level))) / 9]);
-				Autopoke.clicking.dmgTypeCache={};
+				Autopoke.clicking.dmgTypeCache = {};
 				let routeExpPerSec = this.routeCalculatePerSec(avgRouteExp);
 				let gymExpPerSec = this.gymCalculatePerSec(avgGymExp);
 
@@ -188,7 +188,7 @@ if (!Autopoke) var Autopoke = {};
 					g.town,
 					(bonus * g.moneyReward) / g.getPokemonList().length,
 				]);
-				Autopoke.clicking.dmgTypeCache={};
+				Autopoke.clicking.dmgTypeCache = {};
 				let routeMoneyPerSec = this.routeCalculatePerSec(routeMoney);
 				let gymMoneyPerSec = this.gymCalculatePerSec(gymMoney);
 				return this.calculateBest(routeMoneyPerSec, gymMoneyPerSec, n);
@@ -208,56 +208,56 @@ if (!Autopoke) var Autopoke = {};
 					g.town,
 					g.getPokemonList().map(p => PokemonHelper.getPokemonByName(p.name)).filter((p) => p.type1 === type || p.type2 === type).length * GameConstants.GYM_GEMS / g.getPokemonList().length
 				]);
-				Autopoke.clicking.dmgTypeCache={};
+				Autopoke.clicking.dmgTypeCache = {};
 				let routeGemsPerSec = this.routeCalculatePerSec(avgRouteGems);
 				let gymGemsPerSec = this.gymCalculatePerSec(avgGymGems);
 				return this.calculateBest(routeGemsPerSec, gymGemsPerSec, n);
 
 
 			},
-			routeCalculatePerSec: function (routes) {			  
-				const clickAttack=App.game.party.calculateClickAttack();
-				const cps =Autopoke.clicking.cps;
+			routeCalculatePerSec: function (routes) {
+				const clickAttack = App.game.party.calculateClickAttack();
+				const cps = Autopoke.clicking.cps;
 				return routes.map(([[region, route], rate]) => {
-				  const routeHealth = PokemonFactory.routeHealth(route, region);
-				  let avgHits=0;
-				  let c=1;
-				  const avgclicks = Math.ceil(routeHealth / clickAttack)
-				  Object.values(RouteHelper.getAvailablePokemonList(route, region)).forEach(p => {
-					const poke = PokemonHelper.getPokemonByName(p);
-					const types=[poke.type1,poke.type2].sort();
-					const key = types.join(",");
-					let d = Autopoke.clicking.dmgTypeCache[key];
-					if (!d) {
-					  d = App.game.party.calculatePokemonAttack(poke.type1, poke.type2);
-					  Autopoke.clicking.dmgTypeCache[key] = d;
-					}
-					avgHits+=(Math.ceil(routeHealth / d)-avgHits)/c++;
-				
-				})
-				  return [[region, route], rate / Math.min(avgHits, avgclicks / cps)];
+					const routeHealth = PokemonFactory.routeHealth(route, region);
+					let avgHits = 0;
+					let c = 1;
+					const avgclicks = Math.ceil(routeHealth / clickAttack)
+					Object.values(RouteHelper.getAvailablePokemonList(route, region)).forEach(p => {
+						const poke = PokemonHelper.getPokemonByName(p);
+						const types = [poke.type1, poke.type2].sort();
+						const key = types.join(",");
+						let d = Autopoke.clicking.dmgTypeCache[key];
+						if (!d) {
+							d = App.game.party.calculatePokemonAttack(poke.type1, poke.type2);
+							Autopoke.clicking.dmgTypeCache[key] = d;
+						}
+						avgHits += (Math.ceil(routeHealth / d) - avgHits) / c++;
+
+					})
+					return [[region, route], rate / Math.min(avgHits, avgclicks / cps)];
 				});
-			  },
+			},
 			gymCalculatePerSec: function (gyms) {
-				const clickAttack=App.game.party.calculateClickAttack();
+				const clickAttack = App.game.party.calculateClickAttack();
 				const cps = Autopoke.clicking.cps;
 				return gyms.map(([gym, rate]) => {
-					let avgHits=0;
-					let c=1;
-					let avgClicks=0;
-					const pokemonList=GymList[gym].getPokemonList();
+					let avgHits = 0;
+					let c = 1;
+					let avgClicks = 0;
+					const pokemonList = GymList[gym].getPokemonList();
 					for (const p of pokemonList) {
 						const poke = PokemonHelper.getPokemonByName(p.name);
 						const types = [poke.type1, poke.type2].sort();
 						const key = types.join(",");
 						let d = Autopoke.clicking.dmgTypeCache[key];
 						if (!d) {
-						  d = App.game.party.calculatePokemonAttack(poke.type1, poke.type2);
-						  Autopoke.clicking.dmgTypeCache[key] = d;
+							d = App.game.party.calculatePokemonAttack(poke.type1, poke.type2);
+							Autopoke.clicking.dmgTypeCache[key] = d;
 						}
 
-						avgHits+=(Math.ceil(p.maxHealth / d)-avgHits)/c;
-						avgClicks+=(Math.ceil(p.maxHealth/clickAttack)-avgClicks)/c++;
+						avgHits += (Math.ceil(p.maxHealth / d) - avgHits) / c;
+						avgClicks += (Math.ceil(p.maxHealth / clickAttack) - avgClicks) / c++;
 					}
 					return [gym, rate / Math.min(avgHits, avgClicks / cps)];
 				});
@@ -276,13 +276,11 @@ if (!Autopoke) var Autopoke = {};
 		selectedGym: null,
 
 
-		interval: null,
 		notificationValue: NotificationConstants.NotificationSetting.General.gym_won.inGameNotification.value,
 
 
 		isRunning: false,
 		Start: function () {
-
 			this.isRunning = true;
 			let button = document.getElementById('kazeAutoGym');
 			button.classList.remove("btn-danger");
@@ -291,7 +289,6 @@ if (!Autopoke) var Autopoke = {};
 
 		},
 		Stop: function () {
-
 			this.selectedGym = null;
 			this.isRunning = false;
 			NotificationConstants.NotificationSetting.General.gym_won.inGameNotification.value = this.notificationValue;
@@ -299,12 +296,7 @@ if (!Autopoke) var Autopoke = {};
 			button.classList.remove("btn-success");
 			button.classList.add("btn-danger");
 			button.children[0].innerHTML = "OFF";
-
 		},
-
-
-
-
 	}
 
 	GymRunner.gymObservable.subscribe(function (newValue) {
@@ -330,6 +322,133 @@ if (!Autopoke) var Autopoke = {};
 
 
 	}).bind(Autopoke.gym));
+
+	Autopoke.dungeon = {
+
+		selectedDungeon: null,
+
+		tileSub: null,
+
+		tileFn: (val) => {
+
+			if( DungeonBattle.catching()) {
+				let sub =DungeonBattle.catching.subscribe((nv)=>{
+					Autopoke.dungeon.tileFn(0);
+					sub.dispose();
+				})
+			}
+			switch (val) {
+
+				case 3:
+					if (Autopoke.dungeon.openChests) {
+						DungeonRunner.openChest();
+					}
+				case 0:
+					Autopoke.dungeon.doMove();
+					break;
+				case 2:
+					let sub =DungeonRunner.map.currentTile().type.subscribe((nv)=>{
+						Autopoke.dungeon.tileFn(nv);
+						sub.dispose();
+					})
+					break;
+				case 4:
+					DungeonRunner.startBossFight()
+					break;
+				case 5:
+					DungeonRunner.nextFloor();
+					break;
+			}
+
+
+		},
+		doMove: () => {
+			let DRmap = DungeonRunner.map;
+			const board = DRmap.board();
+			const { x, y, floor } = DRmap.playerPosition();
+			const left = x > 0 ? board[floor][y][x - 1] : null;
+			const right = x < board[floor][y].length - 1 ? board[floor][y][x + 1] : null;
+			const up = y > 0 ? board[floor][y - 1][x] : null;
+			const down = y < board[floor].length - 1 ? board[floor][y + 1][x] : null;
+
+			if (left?.isVisited === false) {
+				DRmap.moveLeft();
+			}
+			else if (up?.isVisited === false) {
+				DRmap.moveUp();
+			}
+			else if (down?.isVisited === false || down?.type() === 1) {
+				DRmap.moveDown();
+				if (DRmap.currentTile().type() === 1) { // IF Entrance move right instantly. to avoid being able to exit if holding space
+					DRmap.moveRight();
+				}
+			}
+			else if (right?.isVisited === false) {
+				DRmap.moveRight();
+			}
+
+
+		},
+		openChests: true,
+
+		notificationValue: NotificationConstants.NotificationSetting.General.gym_won.inGameNotification.value,
+
+
+		isRunning: false,
+		Start: function () {
+			this.isRunning = true;
+			let button = document.getElementById('kazeAutoDungeon');
+			button.classList.remove("btn-danger");
+			button.classList.add("btn-success");
+			button.children[0].innerHTML = "ON";
+
+		},
+		Stop: function () {
+			this.selectedDungeon = null;
+			this.isRunning = false;
+			//NotificationConstants.NotificationSetting.General.gym_won.inGameNotification.value = this.notificationValue;
+			let button = document.getElementById('kazeAutoDungeon');
+			button.classList.remove("btn-success");
+			button.classList.add("btn-danger");
+			button.children[0].innerHTML = "OFF";
+		},
+	}
+
+	player.route.subscribe((function (newValue) {
+
+		this.selectedDungeon = null;
+		//NotificationConstants.NotificationSetting.General.gym_won.inGameNotification.value = this.notificationValue;
+	}).bind(Autopoke.dungeon));
+	player.town.subscribe((function (newValue) {
+
+		//	NotificationConstants.NotificationSetting.General.gym_won.inGameNotification.value = this.notificationValue;
+		if (this.selectedDungeon === null) return;
+
+		if (player.route() !== 0 || (player.town().name !== this.selectedDungeon.name)) {
+			this.selectedDungeon = null;
+			return;
+		}
+		if (this.isRunning) {
+			//NotificationConstants.NotificationSetting.General.gym_won.inGameNotification.value = false;
+			
+			setTimeout(()=>{DungeonRunner.initializeDungeon(this.selectedDungeon);},30);
+			
+		}
+	}).bind(Autopoke.dungeon));
+	DungeonRunner.dungeonFinished(true);
+
+	DungeonRunner.dungeonFinished.subscribe((function (nv) {
+
+		if (!this.isRunning || nv) {
+			this.tileSub = null;
+			return;
+		}
+		this.selectedDungeon = DungeonRunner.dungeon;
+		this.tileSub = DungeonRunner.currentTileType.subscribe(n => this.tileFn(n()), this);
+		this.doMove();
+
+	}).bind(Autopoke.dungeon));
+
 })();
 
 //Create Clicking UI
@@ -363,7 +482,7 @@ if (!Autopoke) var Autopoke = {};
 	</div>
 	<div class="row p-0 no-gutters">
 		<button id="kazeAutoGym" class="btn btn-danger col-6">Auto Gym [<span>OFF</span>]</button>
-		<button id="kazeAutoDung" class="btn btn-danger col-6">Auto Dungeon [<span>OFF</span>]</button>
+		<button id="kazeAutoDungeon" class="btn btn-danger col-6">Auto Dungeon [<span>OFF</span>]</button>
 	</div>
 		`;
 
@@ -406,6 +525,7 @@ if (!Autopoke) var Autopoke = {};
 
 	document.getElementById('kazeClickingUIButton').addEventListener('click', () => { Autopoke.clicking.isRunning ? Autopoke.clicking.Stop() : Autopoke.clicking.Start(); });
 	document.getElementById('kazeAutoGym').addEventListener('click', () => { Autopoke.gym.isRunning ? Autopoke.gym.Stop() : Autopoke.gym.Start(); });
+	document.getElementById('kazeAutoDungeon').addEventListener('click', () => { Autopoke.dungeon.isRunning ? Autopoke.dungeon.Stop() : Autopoke.dungeon.Start(); });
 	document.getElementById('kazeMostEffBtn').addEventListener('click', function () {
 		if (Autopoke.clicking.mostEffPlace === null) return;
 		if (typeof Autopoke.clicking.mostEffPlace[0] === "string") {
